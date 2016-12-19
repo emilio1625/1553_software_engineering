@@ -1,0 +1,33 @@
+{
+  "name": "ingenio_web",
+  "version": "0.1.0",
+  "description": "\"Sistema para administración de una clínica para la materia de ingeniería de software\"",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilio1625/ingenioWeb.git"
+  },
+  "author": "\"Emilio Cabrera\"",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emilio1625/ingenioWeb/issues"
+  },
+  "homepage": "https://github.com/emilio1625/ingenioWeb#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-bower": "0.0.13",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sass": "^3.0.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-util": "^3.0.7"
+  }
+}
