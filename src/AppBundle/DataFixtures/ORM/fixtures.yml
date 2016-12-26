@@ -1,0 +1,112 @@
+AppBundle\Entity\Patient:
+    Patient_ {1..10}:
+        firstName: <fisrtName()>
+        lastName: <lastName()>
+        username (unique): <username()>
+        password: <password()>
+        email (unique): <email()>
+        address: <address()>
+        phoneNumber: <phoneNumber()>
+        curp (unique): <isbn13()>
+        medicalRecords: '5x @MedicalRecords_*'
+        treatments: '5x @Treatments_*'
+        appointments: '5x @Appointment_*'
+        odontograms: '5x @Odontogram_*'
+        note: <text()>
+
+AppBundle\Entity\Doctor:
+    Doctor_{1..10}:
+        firstName: <fisrtName()>
+        lastName: <lastName()>
+        username (unique): <username()>
+        password: <password()>
+        email (unique): <email()>
+        address: <address()>
+        phoneNumber: <phoneNumber()>
+        specialty: <word()>
+        profesionalId (unique): <ean13()>
+        patients: '5x @Patient_*'
+        appointments: '5x @Appointment_*'
+        workHoursStart: <time()>
+        workHoursEnd: <time()>
+        lunchStart: <time()>
+        lunchEnd: <time()>
+        workDaysStart: <word()>
+        workDaysEnd: <word()>
+        semblance: <text()>
+
+AppBundle\Entity\Appointment:
+    Appointment_{1..15}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        medicalRecord: '@MedicalRecord_*'
+        odontogram: '@Odontogram_*'
+        prescription: '@Prescription_*'
+        startsAt: <datetime('-3 hours', now)>
+        startedAt: <datetime('-3 hours', now)>
+        finishesAt: <datetime('-3 hours', now)>
+        finishedAt: <datetime('-3 hours', now)>
+        notes: <text()>
+        isCanceled: <boolean(80)>
+
+AppBundle\Entity\Treatment:
+    Treatment_{1..15}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        appointments: '5x @Appointment_*'
+        desciption: <text()>
+        comments: <text()>
+        cost: <randomNumber(4)>
+
+AppBundle\Entity\MedicalRecord:
+    MedicalRecord_{1..50}:
+        appointment:  '@Appointment_*'
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        weight: <randomNumber(2)>
+        height: <randomNumber(2)>
+        bloodPreasure: <randomNumber(3)>
+        alergies: <word()>
+        job: <jobTitle()>
+        maritalStatus: <word()>
+        religion: <word()>
+        isAlcholic: <booblean()>
+        isSmoker: <booblean()>
+        isDrugAddict: <booblean()>
+        hasDiabetes: <booblean()>
+        hasHeartDiseases: <booblean()>
+        hasAsma: <booblean()>
+        hasHearingImpairment: <booblean()>
+        hasEyesightImpairment: <booblean()>
+        hasSpeechIpariment: <booblean()>
+        hasMusculoskeletalDisorders: <booblean()>
+        hasEpilepsy: <booblean()>
+        hasSinusitis: <booblean()>
+        hasPhysicalRestictions: <booblean()>
+        hasKidneyIllness: <booblean()>
+        hasMentalDisorders: <booblean()>
+        hasHypertension: <booblean()>
+        hasArthritis: <booblean()>
+        hasNoseBleeds: <booblean()>
+        hasMenstrualClamps: <booblean()>
+        hasBleedingDisorders: <booblean()>
+        hasIntestinalDisorders: <booblean()>
+        hasEatingDisorders: <booblean()>
+        hasHeadeaches: <booblean()>
+        hasRecentSurgery: <booblean()>
+        observations: <text()>
+
+AppBundle\Entity\Prescription:
+    Prescription_{1..15}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        appointment: '@Appointment_*'
+        rx: <text()>
+        recommendations: <text()>
+        notes: <text()>
+
+AppBundle\Entity\Odontogram:
+    Odontogram_{1..15}:
+        patient: '@Patient_*'
+        appointment: '@Appointment_*'
+
