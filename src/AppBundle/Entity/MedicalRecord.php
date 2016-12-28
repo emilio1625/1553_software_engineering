@@ -40,21 +40,22 @@ class MedicalRecord
     private $slug;
 
     /**
-     * @ORM\OneToOne(targetEntity="Appointment", inversedBy="medicalRecord")
-     */
-    private $appointment;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="appointments")
+     * @ORM\ManyToOne(targetEntity="Patient")
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Doctor", inversedBy="appointments")
+     * @ORM\ManyToOne(targetEntity="Doctor")
      * @ORM\JoinColumn(nullable=false)
      */
     private $doctor;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Appointment", inversededBy="medicalRecord")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $appointment;
 
     // Physical Exam
     /**
@@ -266,22 +267,6 @@ class MedicalRecord
     }
 
     /**
-     * @return Appointment
-     */
-    public function getAppointment()
-    {
-        return $this->appointment;
-    }
-
-    /**
-     * @param Appointment $appointment
-     */
-    public function setAppointment(Appointment $appointment)
-    {
-        $this->appointment = $appointment;
-    }
-
-    /**
      * @return Patient
      */
     public function getPatient()
@@ -294,6 +279,7 @@ class MedicalRecord
      */
     public function setPatient(Patient $patient)
     {
+        $patient->addMedicalRecord($this);
         $this->patient = $patient;
     }
 
@@ -310,7 +296,30 @@ class MedicalRecord
      */
     public function setDoctor(Doctor $doctor)
     {
+        if ($doctor === $this->doctor) {
+            return;
+        }
         $this->doctor = $doctor;
+    }
+
+    /**
+     * @return Appointment
+     */
+    public function getAppointment()
+    {
+        return $this->appointment;
+    }
+
+    /**
+     * @param Appointment $appointment
+     */
+    public function setAppointment(Appointment $appointment)
+    {
+        if ($appointment == $this->appointment) {
+            return;
+        }
+        $this->appointment = $appointment;
+        $appointment->setMedicalRecord($this);
     }
 
     /**

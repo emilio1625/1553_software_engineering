@@ -66,9 +66,6 @@ class Patient extends User
     private $note;
 
 
-    /**
-     * @param
-     */
     public function __construct()
     {
         $this->doctors = new ArrayCollection();
@@ -93,7 +90,12 @@ class Patient extends User
      */
     public function addDoctor(Doctor $doctor)
     {
-        return $this->doctors->add($doctor);
+        if ($this->doctors->contains($doctor)) {
+            return true;
+        }
+
+        $this->doctors->add($doctor);
+        return $doctor->addPatient($this);
     }
 
     /**
@@ -103,7 +105,6 @@ class Patient extends User
     {
         return $this->curp;
     }
-
     /**
      * @param string $curp
      */
@@ -133,6 +134,11 @@ class Patient extends User
      */
     public function addMedicalRecord(MedicalRecord $medicalRecord)
     {
+        if ($this->medicalRecords->contains($medicalRecord)) {
+            return true;
+        }
+
+        $medicalRecord->setPatient($this);
         return $this->medicalRecords->add($medicalRecord);
     }
 
@@ -155,8 +161,13 @@ class Patient extends User
      * @param Treatment $treatment
      * @return boolean
      */
-    public function addTreatments(Treatment $treatment)
+    public function addTreatment(Treatment $treatment)
     {
+        if ($this->treatments->contains($treatment)) {
+            return true;
+        }
+
+        $treatment->setPatient($this);
         return $this->treatments->add($treatment);
     }
 
@@ -181,6 +192,11 @@ class Patient extends User
      */
     public function addAppointment(Appointment $appointment)
     {
+        if ($this->appointments->contains($appointment)) {
+            return true;
+        }
+
+        $appointment->setPatient($this);
         return $this->appointments->add($appointment);
     }
 
@@ -201,10 +217,14 @@ class Patient extends User
 
     /**
      * @param Odontogram $odontogram
-     * @return booleaan
+     * @return boolean
      */
     public function addOdontogram(Odontogram $odontogram)
     {
+        if ($this->odontograms->contains($odontogram)) {
+            return true;
+        }
+
         $odontogram->setPatient($this);
         return $this->odontograms->add($odontogram);
     }

@@ -40,13 +40,13 @@ class Appointment
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="appointments")
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Doctor")
+     * @ORM\ManyToOne(targetEntity="Doctor", inversedBy="appointments")
      * @ORM\JoinColumn(nullable=false)
      */
     private $doctor;
@@ -62,7 +62,7 @@ class Appointment
     private $odontogram;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Treatment", inversedBy="appointments")
+     * @ORM\ManyToOne(targetEntity="Treatment", )
      */
     private $treatment;
 
@@ -164,11 +164,37 @@ class Appointment
     }
 
     /**
+     * @param Patient $patient
+     */
+    public function setPatient(Patient $patient)
+    {
+        if ($patient === $this->patient) {
+            return;
+        }
+
+        $patient->addAppointment($this);
+        $this->patient = $patient;
+    }
+
+    /**
      * @return Doctor
      */
     public function getDoctor()
     {
         return $this->doctor;
+    }
+
+    /**
+     * @param Doctor $doctor
+     */
+    public function setDoctor(Doctor $doctor)
+    {
+        if ($doctor === $this->doctor) {
+            return;
+        }
+
+        $this->doctor = $doctor;
+        $doctor->addAppointment($this);
     }
 
     /**
@@ -182,8 +208,13 @@ class Appointment
     /**
      * @param MedicalRecord $medicalRecord
      */
-    public function setMedicalRecord($medicalRecord)
+    public function setMedicalRecord(MedicalRecord $medicalRecord)
     {
+        if ($medicalRecord === $this->medicalRecord) {
+            return;
+        }
+
+        $medicalRecord->setAppointment($this);
         $this->medicalRecord = $medicalRecord;
     }
 
@@ -198,8 +229,13 @@ class Appointment
     /**
      * @param Odontogram $odontogram
      */
-    public function setOdontogram($odontogram)
+    public function setOdontogram(Odontogram $odontogram)
     {
+        if ($odontogram === $this->odontogram) {
+            return;
+        }
+
+        $odontogram->setAppointment($this);
         $this->odontogram = $odontogram;
     }
 
@@ -214,9 +250,14 @@ class Appointment
     /**
      * @param Treatment $treatment
      */
-    public function setTreatment($treatment)
+    public function setTreatment(Treatment $treatment)
     {
+        if ($treatment == $this->treatment) {
+            return;
+        }
+
         $this->treatment = $treatment;
+        $treatment->addAppointment($this);
     }
 
     /**
@@ -230,9 +271,14 @@ class Appointment
     /**
      * @param Prescription $prescription
      */
-    public function setPrescription($prescription)
+    public function setPrescription(Prescription $prescription)
     {
+        if ($prescription === $this->prescription) {
+            return;
+        }
+
         $this->prescription = $prescription;
+        $prescription->setAppointment($this);
     }
 
     /**
@@ -246,7 +292,7 @@ class Appointment
     /**
      * @param \DateTime $startsAt
      */
-    public function setStartsAt($startsAt)
+    public function setStartsAt(\DateTime $startsAt)
     {
         $this->startsAt = $startsAt;
     }
@@ -262,7 +308,7 @@ class Appointment
     /**
      * @param \DateTime $startedAt
      */
-    public function setStartedAt($startedAt)
+    public function setStartedAt(\DateTime $startedAt)
     {
         $this->startedAt = $startedAt;
     }
@@ -278,7 +324,7 @@ class Appointment
     /**
      * @param \DateTime $finishesAt
      */
-    public function setFinishesAt($finishesAt)
+    public function setFinishesAt(\DateTime $finishesAt)
     {
         $this->finishesAt = $finishesAt;
     }
@@ -294,7 +340,7 @@ class Appointment
     /**
      * @param \DateTime $finishedAt
      */
-    public function setFinishedAt($finishedAt)
+    public function setFinishedAt(\DateTime $finishedAt)
     {
         $this->finishedAt = $finishedAt;
     }
@@ -342,7 +388,7 @@ class Appointment
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }

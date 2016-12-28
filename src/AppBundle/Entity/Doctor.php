@@ -138,6 +138,11 @@ class Doctor extends User
      */
     public function addPatient(Patient $patient)
     {
+        if ($this->patients->contains($patient)) {
+            return true;
+        }
+
+        $patient->addDoctor($this);
         return $this->patients->add($patient);
     }
 
@@ -163,6 +168,7 @@ class Doctor extends User
      */
     public function addAppointment(Appointment $appointment)
     {
+        $appointment->setDoctor($this);
         return $this->appointments->add($appointment);
     }
 

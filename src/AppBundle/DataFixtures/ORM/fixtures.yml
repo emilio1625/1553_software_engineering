@@ -8,10 +8,6 @@ AppBundle\Entity\Patient:
         address: <address()>
         phoneNumber: <phoneNumber()>
         curp (unique): <isbn13()>
-        medicalRecords: '5x @MedicalRecords_*'
-        treatments: '5x @Treatments_*'
-        appointments: '5x @Appointment_*'
-        odontograms: '5x @Odontogram_*'
         note: <text()>
 
 AppBundle\Entity\Doctor:
@@ -26,7 +22,6 @@ AppBundle\Entity\Doctor:
         specialty: <word()>
         profesionalId (unique): <ean13()>
         patients: '5x @Patient_*'
-        appointments: '5x @Appointment_*'
         workHoursStart: <time()>
         workHoursEnd: <time()>
         lunchStart: <time()>
@@ -37,8 +32,7 @@ AppBundle\Entity\Doctor:
 
 AppBundle\Entity\Appointment:
     Appointment_{1..15}:
-        patient: '@Patient_*'
-        doctor: '@Doctor_*'
+        __construct: ['@Patient_*', '@Doctor_*', null, <datetime()>, <datetime()>]
         medicalRecord: '@MedicalRecord_*'
         odontogram: '@Odontogram_*'
         prescription: '@Prescription_*'
@@ -51,6 +45,7 @@ AppBundle\Entity\Appointment:
 
 AppBundle\Entity\Treatment:
     Treatment_{1..15}:
+        __construct: ['@Patient_*', '@Doctor_*', '@Appointment_*']
         patient: '@Patient_*'
         doctor: '@Doctor_*'
         appointments: '5x @Appointment_*'

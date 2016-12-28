@@ -497,6 +497,7 @@ class Odontogram
      */
     public function setPatient(Patient $patient)
     {
+        $patient->addOdontogram($this);
         $this->patient = $patient;
     }
 
