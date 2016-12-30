@@ -1,3 +1,9 @@
+/*!
+ * Copyright (c) 2016. ingenioWeb
+ * Author(s): emilio1625
+ * Last Modified: 18/12/16 10:37 PM
+ *
+ */
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 /* Special class on .container surrounding .navbar, used for positioning it into place. */
@@ -19,6 +25,9 @@
 
 .navbar-wrapper .navbar .container {
   width: auto; }
+
+.navbar-wrapper ~ .main-content {
+  margin-top: 70px; }
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */

@@ -51,6 +51,12 @@ class User implements UserInterface
     protected $password;
 
     /**
+     * Used to create and change the user's password
+     * @var string
+     */
+    protected $plainPasword;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $firstName;
@@ -154,6 +160,34 @@ class User implements UserInterface
     }
 
     /**
+     * @param mixed $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlainPasword()
+    {
+        return $this->plainPasword;
+    }
+
+    /**
+     * @param string $plainPasword
+     */
+    public function setPlainPasword($plainPasword)
+    {
+        $this->plainPassword = $plainPassword;
+        // Save the user even if only plainPassword changes
+        $this->password = null;
+    }
+
+
+
+    /**
      * Returns the salt that was originally used to encode the password.
      *
      * This can return null if the password was not encoded using a salt.
@@ -164,6 +198,7 @@ class User implements UserInterface
     {
         return null;
     }
+
 
     /**
      * Returns the username used to authenticate the user.
@@ -176,6 +211,14 @@ class User implements UserInterface
     }
 
     /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
      * Removes sensitive data from the user.
      *
      * This is important if, at any given point, sensitive information like
@@ -183,7 +226,7 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        $this->plainPassword = null;
     }
 
 

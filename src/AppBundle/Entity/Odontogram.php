@@ -40,7 +40,7 @@ class Odontogram
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="odontograms")
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
@@ -497,7 +497,12 @@ class Odontogram
      */
     public function setPatient(Patient $patient)
     {
+        if ($patient === $this->patient) {
+            return;
+        }
+
         $this->patient = $patient;
+        $patient->addOdontogram($this);
     }
 
     /**
@@ -513,7 +518,12 @@ class Odontogram
      */
     public function setAppointment(Appointment $appointment)
     {
+        if ($appointment === $this->appointment) {
+            return;
+        }
+
         $this->appointment = $appointment;
+        $appointment->setOdontogram($this);
     }
 
     /**
