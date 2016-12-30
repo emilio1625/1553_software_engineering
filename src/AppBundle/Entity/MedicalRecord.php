@@ -40,7 +40,7 @@ class MedicalRecord
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="medicalRecords")
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
@@ -52,7 +52,7 @@ class MedicalRecord
     private $doctor;
 
     /**
-     * @ORM\OneToOne(targetEntity="Appointment", inversededBy="medicalRecord")
+     * @ORM\OneToOne(targetEntity="Appointment", inversedBy="medicalRecord")
      * @ORM\JoinColumn(nullable=false)
      */
     private $appointment;
@@ -279,6 +279,10 @@ class MedicalRecord
      */
     public function setPatient(Patient $patient)
     {
+        if ($patient === $this->patient) {
+            return;
+        }
+
         $patient->addMedicalRecord($this);
         $this->patient = $patient;
     }
@@ -299,6 +303,7 @@ class MedicalRecord
         if ($doctor === $this->doctor) {
             return;
         }
+
         $this->doctor = $doctor;
     }
 
@@ -315,9 +320,10 @@ class MedicalRecord
      */
     public function setAppointment(Appointment $appointment)
     {
-        if ($appointment == $this->appointment) {
+        if ($appointment === $this->appointment) {
             return;
         }
+
         $this->appointment = $appointment;
         $appointment->setMedicalRecord($this);
     }

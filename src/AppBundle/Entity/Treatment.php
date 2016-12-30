@@ -42,7 +42,7 @@ class Treatment
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="treatments", cascade={"persist"})
      */
     private $patient;
 
@@ -81,18 +81,15 @@ class Treatment
     /**
      * @param Patient $patient
      * @param Doctor $doctor
-     * @param Appointment $appointment
      */
     public function __construct(
         Patient $patient,
-        Doctor $doctor,
-        Appointment $appointment
+        Doctor $doctor
     ) {
         $this->appointments = new ArrayCollection();
 
         $this->setPatient($patient);
         $this->setDoctor($doctor);
-        $this->addAppointment($appointment);
     }
 
     /**
@@ -135,6 +132,7 @@ class Treatment
         if ($patient === $this->patient) {
             return;
         }
+
         $this->patient = $patient;
         $patient->addTreatment($this);
     }
@@ -155,6 +153,7 @@ class Treatment
         if ($doctor === $this->doctor) {
             return;
         }
+
         $this->doctor = $doctor;
     }
 

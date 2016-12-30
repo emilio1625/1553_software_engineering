@@ -62,7 +62,7 @@ class Appointment
     private $odontogram;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Treatment", )
+     * @ORM\ManyToOne(targetEntity="Treatment", inversedBy="appointments")
      */
     private $treatment;
 

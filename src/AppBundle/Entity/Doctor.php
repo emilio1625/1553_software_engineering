@@ -37,7 +37,7 @@ class Doctor extends User
     private $professionalId;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Patient", inversedBy="doctors")
+     * @ORM\ManyToMany(targetEntity="Patient", cascade={"persist"})
      */
     private $patients;
 
@@ -83,9 +83,6 @@ class Doctor extends User
     private $semblance;
 
 
-    /**
-     * @param
-     */
     public function __construct()
     {
         $this->patients = new ArrayCollection();
@@ -136,14 +133,22 @@ class Doctor extends User
      * @param Patient $patient
      * @return boolean
      */
-    public function addPatient(Patient $patient)
+    public function addPatients(Patient $patient)
     {
         if ($this->patients->contains($patient)) {
             return true;
         }
 
-        $patient->addDoctor($this);
         return $this->patients->add($patient);
+    }
+
+
+    /**
+     * @param ArrayCollection|Patient[] $patients
+     */
+    public function setPatients($patients)
+    {
+        $this->patients = $patients;
     }
 
     /**

@@ -40,7 +40,7 @@ class Prescription
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="prescriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
@@ -128,7 +128,12 @@ class Prescription
      */
     public function setPatient(Patient $patient)
     {
+        if ($patient === $this->patient) {
+            return;
+        }
+
         $this->patient = $patient;
+        $patient->addPrescription($this);
     }
 
     /**
@@ -144,6 +149,10 @@ class Prescription
      */
     public function setDoctor(Doctor $doctor)
     {
+        if ($doctor === $this->doctor) {
+            return;
+        }
+
         $this->doctor = $doctor;
     }
 
@@ -160,7 +169,12 @@ class Prescription
      */
     public function setAppointment(Appointment $appointment)
     {
+        if ($appointment === $this->appointment) {
+            return;
+        }
+
         $this->appointment = $appointment;
+        $appointment->setPrescription($this);
     }
 
     /**
