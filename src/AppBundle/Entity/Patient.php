@@ -26,21 +26,11 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Patient extends User
 {
-    /**
-     * @ORM\ManyToMany(targetEntity="Doctor", mappedBy="patients")
-     */
-    private $doctors;
 
     /**
      * @ORM\Column(type="string", unique=true)
      */
     private $curp;
-
-    /**
-     * @ORM\OneToMany(targetEntity="MedicalRecord", mappedBy="patient")
-     * @ORM\OrderBy({"createdAt" = "DESC"})
-     */
-    private $medicalRecords;
 
     /**
      * @ORM\OneToMany(targetEntity="Treatment", mappedBy="patient")
@@ -55,6 +45,18 @@ class Patient extends User
     private $appointments;
 
     /**
+     * @ORM\OneToMany(targetEntity="MedicalRecord", mappedBy="patient")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
+     */
+    private $medicalRecords;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Prescription", mappedBy="patient")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
+     */
+    private $prescriptions;
+
+    /**
      * @ORM\OneToMany(targetEntity="Odontogram", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
@@ -66,34 +68,14 @@ class Patient extends User
     private $note;
 
 
-    /**
-     * @param
-     */
     public function __construct()
     {
         $this->doctors = new ArrayCollection();
-        $this->medicalRecords = new ArrayCollection();
         $this->treatments = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->medicalRecords = new ArrayCollection();
+        $this->prescriptions = new ArrayCollection();
         $this->odontograms = new ArrayCollection();
-    }
-
-
-    /**
-     * @return ArrayCollection|Doctor[]
-     */
-    public function getDoctors()
-    {
-        return $this->doctors;
-    }
-
-    /**
-     * @param Doctor $doctor
-     * @return boolean
-     */
-    public function addDoctor(Doctor $doctor)
-    {
-        return $this->doctors->add($doctor);
     }
 
     /**
@@ -103,37 +85,12 @@ class Patient extends User
     {
         return $this->curp;
     }
-
     /**
      * @param string $curp
      */
     public function setCurp($curp)
     {
         $this->curp = $curp;
-    }
-
-    /**
-     * @return ArrayCollection|MedicalRecord[]
-     */
-    public function getMedicalRecords()
-    {
-        return $this->medicalRecords;
-    }
-
-    /**
-     * @return MedicalRecord|null
-     */
-    public function getLastMedicalRecord() {
-        return $this->medicalRecords->first();
-    }
-
-    /**
-     * @param MedicalRecord $medicalRecord
-     * @return boolean
-     */
-    public function addMedicalRecord(MedicalRecord $medicalRecord)
-    {
-        return $this->medicalRecords->add($medicalRecord);
     }
 
     /**
@@ -155,8 +112,13 @@ class Patient extends User
      * @param Treatment $treatment
      * @return boolean
      */
-    public function addTreatments(Treatment $treatment)
+    public function addTreatment(Treatment $treatment)
     {
+        if ($this->treatments->contains($treatment)) {
+            return true;
+        }
+
+        $treatment->setPatient($this);
         return $this->treatments->add($treatment);
     }
 
@@ -181,7 +143,70 @@ class Patient extends User
      */
     public function addAppointment(Appointment $appointment)
     {
+        if ($this->appointments->contains($appointment)) {
+            return true;
+        }
+
+        $appointment->setPatient($this);
         return $this->appointments->add($appointment);
+    }
+
+    /**
+     * @return ArrayCollection|MedicalRecord[]
+     */
+    public function getMedicalRecords()
+    {
+        return $this->medicalRecords;
+    }
+
+    /**
+     * @return MedicalRecord|null
+     */
+    public function getLastMedicalRecord() {
+        return $this->medicalRecords->first();
+    }
+
+    /**
+     * @param MedicalRecord $medicalRecord
+     * @return boolean
+     */
+    public function addMedicalRecord(MedicalRecord $medicalRecord)
+    {
+        if ($this->medicalRecords->contains($medicalRecord)) {
+            return true;
+        }
+
+        $medicalRecord->setPatient($this);
+        return $this->medicalRecords->add($medicalRecord);
+    }
+
+    /**
+     * @return ArrayCollection|Prescription[]
+     */
+    public function getPrescriptions()
+    {
+        return $this->prescriptions;
+    }
+
+    /**
+     * @return Prescription|null
+     */
+    public function getLastPrescription() {
+        return $this->medicalRecords->first();
+    }
+
+    /**
+     * @param Prescription $prescription
+     * @return boolean
+     */
+    public function addPrescription(Prescription $prescription)
+    {
+        if ($this->prescriptions->contains($prescription)) {
+            return true;
+        }
+
+        $prescription->setPatient($this);
+        return $this->prescriptions->add($prescription);
     }
 
     /**
@@ -201,10 +226,14 @@ class Patient extends User
 
     /**
      * @param Odontogram $odontogram
-     * @return booleaan
+     * @return boolean
      */
     public function addOdontogram(Odontogram $odontogram)
     {
+        if ($this->odontograms->contains($odontogram)) {
+            return true;
+        }
+
         $odontogram->setPatient($this);
         return $this->odontograms->add($odontogram);
     }
