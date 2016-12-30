@@ -42,7 +42,7 @@ class Treatment
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient")
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="treatments", cascade={"persist"})
      */
     private $patient;
 
@@ -53,6 +53,7 @@ class Treatment
 
     /**
      * @ORM\OneToMany(targetEntity="Appointment", mappedBy="treatment")
+     * @ORM\OrderBy({"createdAt" = "ASC"})
      */
     private $appointments;
 
@@ -80,16 +81,15 @@ class Treatment
     /**
      * @param Patient $patient
      * @param Doctor $doctor
-     * @param Appointment $appointment
      */
-    public function __construct(Patient $patient, Doctor $doctor, Appointment
-        $appointment)
-    {
-        $this->patient = $patient;
-        $this->doctor = $doctor;
+    public function __construct(
+        Patient $patient,
+        Doctor $doctor
+    ) {
         $this->appointments = new ArrayCollection();
 
-        $this->addAppointment($appointment);
+        $this->setPatient($patient);
+        $this->setDoctor($doctor);
     }
 
     /**
@@ -125,11 +125,36 @@ class Treatment
     }
 
     /**
+     * @param Patient $patient
+     */
+    public function setPatient(Patient $patient)
+    {
+        if ($patient === $this->patient) {
+            return;
+        }
+
+        $this->patient = $patient;
+        $patient->addTreatment($this);
+    }
+
+    /**
      * @return Doctor
      */
     public function getDoctor()
     {
         return $this->doctor;
+    }
+
+    /**
+     * @param Doctor $doctor
+     */
+    public function setDoctor(Doctor $doctor)
+    {
+        if ($doctor === $this->doctor) {
+            return;
+        }
+
+        $this->doctor = $doctor;
     }
 
     /**
@@ -142,10 +167,16 @@ class Treatment
 
     /**
      * @param Appointment $appointment
+     * @return boolean
      */
     public function addAppointment(Appointment $appointment)
     {
-        $this->appointments = $appointment;
+        if ($this->appointments->contains($appointment)) {
+            return true;
+        }
+
+        $appointment->setTreatment($this);
+        return $this->appointments->add($appointment);
     }
 
     /**
