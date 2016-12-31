@@ -54,7 +54,7 @@ class User implements UserInterface
      * Used to create and change the user's password
      * @var string
      */
-    protected $plainPasword;
+    protected $plainPassword;
 
     /**
      * @ORM\Column(type="string")
@@ -170,22 +170,20 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getPlainPasword()
+    public function getPlainPassword()
     {
-        return $this->plainPasword;
+        return $this->plainPassword;
     }
 
     /**
      * @param string $plainPasword
      */
-    public function setPlainPasword($plainPasword)
+    public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
         // Save the user even if only plainPassword changes
         $this->password = null;
     }
-
-
 
     /**
      * Returns the salt that was originally used to encode the password.
