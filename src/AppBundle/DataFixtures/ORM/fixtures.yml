@@ -3,7 +3,7 @@ AppBundle\Entity\Patient:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: <password()>
         gender: '50%? hombre : mujer'
         birthDate: <datetime()>
         email (unique): <email()>
@@ -17,7 +17,7 @@ AppBundle\Entity\Doctor:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: <password()>
         email (unique): <email()>
         address: <address()>
         phoneNumber: <phoneNumber()>
