@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             // Project
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new PUGX\AutocompleterBundle\PUGXAutocompleterBundle(),
             new AppBundle\AppBundle(),
         ];
 
