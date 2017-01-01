@@ -51,7 +51,7 @@ class Odontogram
     private $appointment;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="json_array", nullable=false)
      */
     private $odontogram;
 

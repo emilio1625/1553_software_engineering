@@ -53,8 +53,14 @@ class User implements UserInterface
     /**
      * Used to create and change the user's password
      * @var string
+     * @Assert\NotBlank(groups={"Registration"})
      */
     protected $plainPassword;
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    protected $roles = [];
 
     /**
      * @ORM\Column(type="string")
@@ -143,7 +149,21 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // give everyone ROLE_USER!
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return $roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        $this->roles = $roles;
     }
 
     /**

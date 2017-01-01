@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DoctorRepository")
  * @ORM\Table(name="doctor")
  */
 class Doctor extends User
@@ -87,6 +87,7 @@ class Doctor extends User
     {
         $this->patients = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->roles[] = 'ROLE_DOCTOR';
     }
 
     /**
@@ -131,17 +132,15 @@ class Doctor extends User
 
     /**
      * @param Patient $patient
-     * @return boolean
      */
     public function addPatients(Patient $patient)
     {
         if ($this->patients->contains($patient)) {
-            return true;
+            return;
         }
 
-        return $this->patients->add($patient);
+        $this->patients->add($patient);
     }
-
 
     /**
      * @param ArrayCollection|Patient[] $patients
@@ -164,7 +163,7 @@ class Doctor extends User
      */
     public function getNextAppointment()
     {
-        return $this->appointments->first();
+        return $this->appointments->last();
     }
 
     /**
@@ -173,8 +172,12 @@ class Doctor extends User
      */
     public function addAppointment(Appointment $appointment)
     {
+        if ($this->appointments->contains($appointment)) {
+            return;
+        }
+
+        $this->appointments->add($appointment);
         $appointment->setDoctor($this);
-        return $this->appointments->add($appointment);
     }
 
     /**
@@ -289,4 +292,8 @@ class Doctor extends User
         $this->semblance = $semblance;
     }
 
+    public function __toString()
+    {
+        return $this->firstName.' '.$this->lastName.': '.$this->specialty;
+    }
 }

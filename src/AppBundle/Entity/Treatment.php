@@ -78,18 +78,9 @@ class Treatment
      */
     private $createdAt;
 
-    /**
-     * @param Patient $patient
-     * @param Doctor $doctor
-     */
-    public function __construct(
-        Patient $patient,
-        Doctor $doctor
-    ) {
-        $this->appointments = new ArrayCollection();
 
-        $this->setPatient($patient);
-        $this->setDoctor($doctor);
+    public function __construct() {
+        $this->appointments = new ArrayCollection();
     }
 
     /**
@@ -167,16 +158,15 @@ class Treatment
 
     /**
      * @param Appointment $appointment
-     * @return boolean
      */
     public function addAppointment(Appointment $appointment)
     {
         if ($this->appointments->contains($appointment)) {
-            return true;
+            return;
         }
 
+        $this->appointments->add($appointment);
         $appointment->setTreatment($this);
-        return $this->appointments->add($appointment);
     }
 
     /**
