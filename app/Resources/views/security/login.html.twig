@@ -1,12 +1,13 @@
-{% extends '::base.html.twig' %}
+{% extends ':form:form.html.twig' %}
 
-{% block title %}Login{% endblock title %}
+{% block title %}Entrar{% endblock title %}
 
-{% block content %}
-    <div class="container main-content">
+{% block form %}
         <div class="row">
             <div class="col-xs-12">
-                <h1>Login</h1>
+                <div class="page-header">
+                  <h1>Ingresar</h1>
+                </div>
                 {% if error %}
                     <div class="alert alert-danger">
                         {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -20,6 +21,5 @@
                 {{ form_end(form) }}
             </div>
         </div>
-    </div>
 
-{% endblock content %}
+{% endblock form %}

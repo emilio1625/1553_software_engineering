@@ -16,7 +16,7 @@
 namespace AppBundle\Security;
 
 
-use AppBundle\Form\LoginForm;
+use AppBundle\Form\LoginFormType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -75,7 +75,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             return;
         }
 
-        $form = $this->formFactory->create(LoginForm::class);
+        $form = $this->formFactory->create(LoginFormType::class);
         $form->handleRequest($request);
 
         $data = $form->getData();
