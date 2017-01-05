@@ -30,36 +30,45 @@ class Patient extends User
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\Regex(
+     *     pattern = "/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/",
+     *     message="CURP incorrecto, sólo mayúsculas por favor"
+     * )
      */
     private $curp;
 
     /**
      * @ORM\OneToMany(targetEntity="Treatment", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Treatment[]
      */
     private $treatments;
 
     /**
      * @ORM\OneToMany(targetEntity="Appointment", mappedBy="patient")
      * @ORM\OrderBy({"startsAt" = "DESC", "createdAt" = "DESC"})
+     * @var ArrayCollection|Appointment[]
      */
     private $appointments;
 
     /**
      * @ORM\OneToMany(targetEntity="MedicalRecord", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|MedicalRecord[]
      */
     private $medicalRecords;
 
     /**
      * @ORM\OneToMany(targetEntity="Prescription", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Prescription[]
      */
     private $prescriptions;
 
     /**
      * @ORM\OneToMany(targetEntity="Odontogram", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Odontogram[]
      */
     private $odontograms;
 
@@ -254,5 +263,33 @@ class Patient extends User
     public function __toString()
     {
         return $this->firstName.' '.$this->lastName;
+    }
+
+
+    /**
+     * @param Appointment $newAppointment
+     * @return boolean
+     */
+    public function isAvailable(Appointment $newAppointment)
+    {
+        $now = new \DateTime();
+        $start2 = clone $newAppointment->getStartsAt();
+        $end2 = clone $newAppointment->getFinishesAt();
+
+        foreach ($this->getAppointments() as $appointment) {
+            if ($appointment->getIsCanceled() || $appointment->getStartsAt() < $now || $appointment === $newAppointment) {
+                continue;
+            }
+            $start1 = clone $appointment->getStartsAt();
+            $end1 = clone $appointment->getFinishesAt();
+            if ($start2 > $start1 && $start2 < $end1) { // start1 <= start2 <= end1
+                return false;
+            } elseif ($end2 > $start1 && $end2 < $end1) { // start1 <= end2 <= end1
+                return false;
+            } elseif ($start2 <= $start1 && $end2 >= $end1) {
+                return false;
+            }
+        }
+        return true;
     }
 }

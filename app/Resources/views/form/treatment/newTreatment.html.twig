@@ -1,0 +1,33 @@
+{% extends app.request.isXmlHttpRequest ? ':form:form_ajax.html.twig' : ':form:form.html.twig' %}
+
+{% block title %}Nuevo Tratamiento{% endblock %}
+
+{% block body %}
+    {% if app.request.isXmlHttpRequest %}
+        <div id="modal-new-author" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    {% endif %}
+                        <div class="page-header">
+                          <h1>Nuevo Tratamiento</h1>
+                        </div>
+    {% if app.request.isXmlHttpRequest %}
+                    </div>
+                    <div class="modal-body">
+    {% endif %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Crear Tratamiento</button>
+    {{ form_end(form) }}
+    {% if app.request.isXmlHttpRequest %}
+                        </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
