@@ -20,14 +20,14 @@
   padding-left: 0; }
 
 .navbar-wrapper .navbar {
-  padding-right: 15px;
-  padding-left: 15px; }
+  padding-right: 16px;
+  padding-left: 16px; }
 
 .navbar-wrapper .navbar .container {
   width: auto; }
 
-.navbar-wrapper ~ .main-content {
-  margin-top: 70px; }
+.navbar-wrapper + .main-content {
+  margin-top: 90px; }
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */

@@ -18,6 +18,7 @@ namespace AppBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -52,17 +53,23 @@ class Prescription
     private $doctor;
 
     /**
-     * @ORM\OneToOne(targetEntity="Appointment", inversedBy="prescription")
+     * @ORM\OneToOne(targetEntity="MedicalRecord", inversedBy="prescription")
      */
-    private $appointment;
+    private $medicalRecord;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(
+     *     message="El diagnostico no puede estar vacío"
+     * )
      */
     private $rx;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(
+     *     message="Las recomendaciones no pueden estar vacías"
+     * )
      */
     private $recommendations;
 
@@ -144,24 +151,24 @@ class Prescription
     }
 
     /**
-     * @return Appointment
+     * @return MedicalRecord
      */
-    public function getAppointment()
+    public function getMedicalRecord()
     {
-        return $this->appointment;
+        return $this->medicalRecord;
     }
 
     /**
-     * @param Appointment $appointment
+     * @param MedicalRecord $medicalRecord
      */
-    public function setAppointment(Appointment $appointment)
+    public function setMedicalRecord(MedicalRecord $medicalRecord)
     {
-        if ($appointment === $this->appointment) {
+        if ($medicalRecord === $this->medicalRecord) {
             return;
         }
 
-        $this->appointment = $appointment;
-        $appointment->setPrescription($this);
+        $this->medicalRecord = $medicalRecord;
+        $medicalRecord->setPrescription($this);
     }
 
     /**

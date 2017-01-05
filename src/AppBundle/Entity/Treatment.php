@@ -20,10 +20,11 @@ namespace AppBundle\Entity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TreatmentRepository")
  * @ORM\Table(name="treatment")
  */
 class Treatment
@@ -36,7 +37,15 @@ class Treatment
     private $id;
 
     /**
-     * @Gedmo\Slug(fields={"id"})
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     message="El nombre no puede estar vacío"
+     * )
+     */
+    private $name;
+
+    /**
+     * @Gedmo\Slug(fields={"name","id"})
      * @ORM\Column(type="string", unique=true)
      */
     private $slug;
@@ -52,13 +61,16 @@ class Treatment
     private $doctor;
 
     /**
-     * @ORM\OneToMany(targetEntity="Appointment", mappedBy="treatment")
+     * @ORM\OneToMany(targetEntity="MedicalRecord", mappedBy="treatment")
      * @ORM\OrderBy({"createdAt" = "ASC"})
      */
-    private $appointments;
+    private $medicalRecords;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(
+     *     message="La descripción no puede estar vacía"
+     * )
      */
     private $description;
 
@@ -69,8 +81,16 @@ class Treatment
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(
+     *     message="El costo no puede estar vacío"
+     * )
      */
     private $cost;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isFinished;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -80,7 +100,7 @@ class Treatment
 
 
     public function __construct() {
-        $this->appointments = new ArrayCollection();
+        $this->medicalRecords = new ArrayCollection();
     }
 
     /**
@@ -89,6 +109,22 @@ class Treatment
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setFirstName($name)
+    {
+        $this->name = $name;
     }
 
     /**
@@ -149,24 +185,24 @@ class Treatment
     }
 
     /**
-     * @return ArrayCollection|Appointment[]
+     * @return ArrayCollection|MedicalRecord[]
      */
-    public function getAppointments()
+    public function getMedicalRecords()
     {
-        return $this->appointments;
+        return $this->medicalRecords;
     }
 
     /**
-     * @param Appointment $appointment
+     * @param MedicalRecord $medicalRecord
      */
-    public function addAppointment(Appointment $appointment)
+    public function addMedicalRecord(MedicalRecord $medicalRecord)
     {
-        if ($this->appointments->contains($appointment)) {
+        if ($this->medicalRecords->contains($medicalRecord)) {
             return;
         }
 
-        $this->appointments->add($appointment);
-        $appointment->setTreatment($this);
+        $this->medicalRecords->add($medicalRecord);
+        $medicalRecord->setTreatment($this);
     }
 
     /**
@@ -215,6 +251,22 @@ class Treatment
     public function setCost($cost)
     {
         $this->cost = $cost;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsFinished()
+    {
+        return $this->isFinished;
+    }
+
+    /**
+     * @param boolean $isFinished
+     */
+    public function setIsFinished($isFinished)
+    {
+        $this->isFinished = $isFinished;
     }
 
     /**

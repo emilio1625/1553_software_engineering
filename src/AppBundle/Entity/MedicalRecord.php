@@ -18,6 +18,7 @@ namespace AppBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -57,6 +58,21 @@ class MedicalRecord
      */
     private $appointment;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Odontogram", mappedBy="medicalRecord")
+     */
+    private $odontogram;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Treatment", inversedBy="medicalRecords")
+     */
+    private $treatment;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Prescription", mappedBy="medicalRecord")
+     */
+    private $prescription;
+
     // Physical Exam
     /**
      * @ORM\Column(type="float")
@@ -69,7 +85,11 @@ class MedicalRecord
     private $height;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="string")
+     * @Assert\Regex(
+     *     pattern="/\d{2,3}\/\d{2,3}/",
+     *
+     * )
      */
     private $bloodPreasure;
 
@@ -86,6 +106,10 @@ class MedicalRecord
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Choice(
+     *     choices = {"Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a"},
+     *     message = "Elige un estado civil válido"
+     * )
      */
     private $maritalStatus;
 
@@ -218,6 +242,9 @@ class MedicalRecord
     // Doctor Observations
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(
+     *     message="Las obervaciones no pueden estar vacías"
+     * )
      */
     private $observations;
 
@@ -312,6 +339,69 @@ class MedicalRecord
 
         $this->appointment = $appointment;
         $appointment->setMedicalRecord($this);
+    }
+
+    /**
+     * @return Odontogram
+     */
+    public function getOdontogram()
+    {
+        return $this->odontogram;
+    }
+
+    /**
+     * @param Odontogram $odontogram
+     */
+    public function setOdontogram(Odontogram $odontogram)
+    {
+        if ($odontogram === $this->odontogram) {
+            return;
+        }
+
+        $this->odontogram = $odontogram;
+        $odontogram->setMedicalRecord($this);
+    }
+
+    /**
+     * @return Treatment
+     */
+    public function getTreatment()
+    {
+        return $this->treatment;
+    }
+
+    /**
+     * @param Treatment|null $treatment
+     */
+    public function setTreatment(Treatment $treatment = null)
+    {
+        if ($treatment === $this->treatment) {
+            return;
+        }
+
+        $this->treatment = $treatment;
+        $treatment->addMedicalRecord($this);
+    }
+
+    /**
+     * @return Prescription
+     */
+    public function getPrescription()
+    {
+        return $this->prescription;
+    }
+
+    /**
+     * @param Prescription $prescription
+     */
+    public function setPrescription(Prescription $prescription)
+    {
+        if ($prescription === $this->prescription) {
+            return;
+        }
+
+        $this->prescription = $prescription;
+        $prescription->setMedicalRecord($this);
     }
 
     /**

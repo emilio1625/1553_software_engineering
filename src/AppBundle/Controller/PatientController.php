@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 /**
- * @Security("is_granted('ROLE_PATIENT')")
+ * @Security("is_granted('ROLE_USER')")
  * @Route("/patient")
  */
 class PatientController extends Controller
@@ -31,7 +31,7 @@ class PatientController extends Controller
     {
         /** @var Patient $user */
         $user = $this->getUser();
-        return new Response('Hola '.$user->getFirstName().' '.$user->getLastName());
+        return new Response('<!doctype html><html lang="es"><head><meta charset="UTF-8"></head><body>Hola '.$user->getFirstName().' '.$user->getLastName().'</body></html>');
     }
 
     /**
@@ -45,13 +45,13 @@ class PatientController extends Controller
     public function searchAction(Request $request)
     {
         $query = $request->query->get('q');
-        $patients = $this->getDoctrine()->getRepository('AppBundle:Patient')->findNameLike($query);
+        $patients = $this->getDoctrine()->getRepository(Patient::class)->findNameLike($query);
         return $this->render('search.json.twig', ['results' => $patients]);
     }
 
     /**
      * @Route(
-           "/get/patient/{id}",
+           "/get/{id}",
            name="get_patient",
            defaults={"_format"="json"},
            condition="request.isXmlHttpRequest()"
@@ -60,7 +60,7 @@ class PatientController extends Controller
      */
     public function getAction($id = null)
     {
-        if (null === $patient = $this->getDoctrine()->getRepository('AppBundle:Patient')->find($id)) {
+        if (null === $patient = $this->getDoctrine()->getRepository(Patient::class)->find($id)) {
             throw $this->createNotFoundException();
         }
         return $this->json($patient->__toString());

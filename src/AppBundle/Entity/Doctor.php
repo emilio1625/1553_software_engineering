@@ -18,6 +18,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -28,11 +29,18 @@ class Doctor extends User
 {
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     message="La especilidad no puede estar vacía"
+     * )
      */
     private $specialty;
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\Regex(
+     *     pattern = "/\d/",
+     *     message = "Número de cédula no válido"
+     * )
      */
     private $professionalId;
 
@@ -48,37 +56,57 @@ class Doctor extends User
     private $appointments;
 
     /**
-     * @ORM\Column(type="time")
-     */
-    private $workHoursStart;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $workHoursEnd;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $lunchStart;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $lunchEnd;
-
-    /**
      * @ORM\Column(type="string")
+     * @Assert\Choice(
+     *     choices = {"lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"},
+     *     message = "No es un día válido"
+     * )
      */
-    private $workDaysStart;
+    private $dayOff;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="time")
+     * @Assert\Time(
+     *     message="No es una hora valida"
+     * )
+     * @var \DateTime $checkInTime
      */
-    private $workDaysEnd;
+    private $checkInTime;
+
+    /**
+     * @ORM\Column(type="time")
+     * @Assert\Range(
+     *     min = "1 hour",
+     *     max = "11 hours"
+     * )
+     * @var \DateInterval $workHours
+     */
+    private $workHours;
+
+    /**
+     * @ORM\Column(type="time")
+     * @Assert\Time(
+     *     message="No es una hora valida"
+     * )
+     * @var \DateTime
+     */
+    private $breakTime;
+
+    /**
+     * @ORM\Column(type="dateinterval")
+     * @Assert\Range(
+     *     min = "1 hour",
+     *     max = "5 hours"
+     * )
+     * @var \DateInterval $breakDuration
+     */
+    private $breakDuration;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(
+     *     message = "La semblanza no puede estar vacía"
+     * )
      */
     private $semblance;
 
@@ -181,99 +209,83 @@ class Doctor extends User
     }
 
     /**
-     * @return \DateTime
+     * @return mixed
      */
-    public function getWorkHoursStart()
+    public function getDayOff()
     {
-        return $this->workHoursStart;
+        return $this->dayOff;
     }
 
     /**
-     * @param \DateTime $workHoursStart
+     * @param mixed $dayOff
      */
-    public function setWorkHoursStart(\DateTime $workHoursStart)
+    public function setDayOff($dayOff)
     {
-        $this->workHoursStart = $workHoursStart;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getWorkHoursEnd()
-    {
-        return $this->workHoursEnd;
-    }
-
-    /**
-     * @param \DateTime $workHoursEnd
-     */
-    public function setWorkHoursEnd(\DateTime $workHoursEnd)
-    {
-        $this->workHoursEnd = $workHoursEnd;
+        $this->dayOff = $dayOff;
     }
 
     /**
      * @return \DateTime
      */
-    public function getLunchStart()
+    public function getCheckInTime()
     {
-        return $this->lunchStart;
+        return $this->checkInTime;
     }
 
     /**
-     * @param \DateTime $lunchStart
+     * @param \DateTime $checkInTime
      */
-    public function setLunchStart(\DateTime $lunchStart)
+    public function setCheckInTime(\DateTime $checkInTime)
     {
-        $this->lunchStart = $lunchStart;
+        $this->checkInTime = $checkInTime;
+    }
+
+    /**
+     * @return \DateInterval
+     */
+    public function getWorkHours()
+    {
+        return $this->workHours;
+    }
+
+    /**
+     * @param \DateInterval $workHours
+     */
+    public function setWorkHours(\DateInterval $workHours)
+    {
+        $this->workHours = $workHours;
     }
 
     /**
      * @return \DateTime
      */
-    public function getLunchEnd()
+    public function getBreakTime()
     {
-        return $this->lunchEnd;
+        return $this->breakTime;
     }
 
     /**
-     * @param \DateTime $lunchEnd
+     * @param \DateTime $breakTime
      */
-    public function setLunchEnd(\DateTime $lunchEnd)
+    public function setBreakTime(\DateTime $breakTime)
     {
-        $this->lunchEnd = $lunchEnd;
+        $this->breakTime = $breakTime;
     }
 
     /**
-     * @return string
+     * @return \DateInterval
      */
-    public function getWorkDaysStart()
+    public function getBreakDuration()
     {
-        return $this->workDaysStart;
+        return $this->breakDuration;
     }
 
     /**
-     * @param string $workDaysStart
+     * @param \DateInterval $breakDuration
      */
-    public function setWorkDaysStart($workDaysStart)
+    public function setBreakDuration(\DateInterval $breakDuration)
     {
-        $this->workDaysStart = $workDaysStart;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWorkDaysEnd()
-    {
-        return $this->workDaysEnd;
-    }
-
-    /**
-     * @param string $workDaysEnd
-     */
-    public function setWorkDaysEnd($workDaysEnd)
-    {
-        $this->workDaysEnd = $workDaysEnd;
+        $this->breakDuration = $breakDuration;
     }
 
     /**
@@ -295,5 +307,32 @@ class Doctor extends User
     public function __toString()
     {
         return $this->firstName.' '.$this->lastName.': '.$this->specialty;
+    }
+
+    /**
+     * @param Appointment $newAppointment
+     * @return boolean
+     */
+    public function isAvailable(Appointment $newAppointment)
+    {
+        $now = new \DateTime();
+        $start2 = $newAppointment->getStartsAt();
+        $end2 = $newAppointment->getFinishesAt();
+
+        foreach ($this->getAppointments() as $appointment) {
+            if ($appointment->getIsCanceled() || $appointment->getFinishesAt() < $now || $appointment === $newAppointment) {
+                continue;
+            }
+            $start1 = $appointment->getStartsAt();
+            $end1 = $appointment->getFinishesAt();
+            if ($start2 > $start1 && $start2 < $end1) { // start1 <= start2 <= end1
+                return false;
+            } elseif ($end2 > $start1 && $end2 < $end1) { // start1 <= end2 <= end1
+                return false;
+            } elseif ($start2 <= $start1 && $end2 >= $end1) {
+                return false;
+            }
+        }
+        return true;
     }
 }
