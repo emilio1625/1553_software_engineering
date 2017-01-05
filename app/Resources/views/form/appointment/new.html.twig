@@ -1,0 +1,35 @@
+{% extends ':form:form.html.twig' %}
+
+{% block title %}Nueva cita{% endblock %}
+
+{% block form %}
+    <div class="page-header">
+        <h1>Nueva cita</h1>
+    </div>
+
+    {{ form_start(appointment_form) }}
+        {{ form_widget(appointment_form) }}
+        <button type="submit" class="btn btn-primary">Agendar</button>
+    {{ form_end(appointment_form) }}
+{% endblock form %}
+
+{% block specific_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        {% if is_granted('ROLE_DOCTOR') %}
+            auto_complete_field(
+                "#appointment_form_patient",
+                "{{ path('search_patient') }}",
+                "{{ path('get_patient') }}",
+                3
+            );
+        {% else %}
+            auto_complete_field(
+                "#appointment_form_doctor",
+                "{{ path('search_doctor') }}",
+                "{{ path('get_doctor') }}",
+                3
+            );
+        {% endif %}
+    </script>
+{% endblock specific_javascripts %}

@@ -8,13 +8,14 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Form\LoginForm;
+use AppBundle\Form\LoginFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class SecurityController extends Controller
 {
-    /**user
+    /**
      * @Route("/login", name="security_login")
      */
     public function loginAction()
@@ -27,7 +28,7 @@ class SecurityController extends Controller
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $form = $this->createForm(LoginForm::class, [
+        $form = $this->createForm(LoginFormType::class, [
             '_username' => $lastUsername
         ]);
 
@@ -39,6 +40,14 @@ class SecurityController extends Controller
                 'error' => $error,
             ]
         );
+    }
+
+    /**
+     * @Route("/register", name="patient_register")
+     */
+    public function indexAction($name)
+    {
+        return $this->render('', array('name' => $name));
     }
 
     /**

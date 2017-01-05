@@ -53,8 +53,14 @@ class User implements UserInterface
     /**
      * Used to create and change the user's password
      * @var string
+     * @Assert\NotBlank(groups={"Registration"})
      */
-    protected $plainPasword;
+    protected $plainPassword;
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    protected $roles = [];
 
     /**
      * @ORM\Column(type="string")
@@ -143,7 +149,21 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // give everyone ROLE_USER!
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return $roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        $this->roles = $roles;
     }
 
     /**
@@ -170,22 +190,20 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getPlainPasword()
+    public function getPlainPassword()
     {
-        return $this->plainPasword;
+        return $this->plainPassword;
     }
 
     /**
      * @param string $plainPasword
      */
-    public function setPlainPasword($plainPasword)
+    public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
         // Save the user even if only plainPassword changes
         $this->password = null;
     }
-
-
 
     /**
      * Returns the salt that was originally used to encode the password.

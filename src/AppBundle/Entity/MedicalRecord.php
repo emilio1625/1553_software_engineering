@@ -229,20 +229,6 @@ class MedicalRecord
 
 
     /**
-     * @param $patient
-     * @param $doctor
-     * @param $appointment
-     */
-    public function __construct(Patient $patient,
-        Doctor $doctor, Appointment $appointment)
-    {
-        $this->patient = $patient;
-        $this->doctor = $doctor;
-        $this->appointment = $appointment;
-    }
-
-
-    /**
      * @return integer
      */
     public function getId()
@@ -283,8 +269,8 @@ class MedicalRecord
             return;
         }
 
-        $patient->addMedicalRecord($this);
         $this->patient = $patient;
+        $patient->addMedicalRecord($this);
     }
 
     /**

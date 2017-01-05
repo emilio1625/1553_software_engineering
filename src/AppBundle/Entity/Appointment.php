@@ -99,36 +99,13 @@ class Appointment
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isCanceled;
+    private $isCanceled = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-
-
-    /**
-     * @param $patient
-     * @param $doctor
-     * @param $treatment
-     * @param $startsAt
-     * @param $finishesAt
-     */
-    public function __construct(
-        Patient $patient,
-        Doctor $doctor,
-        Treatment $treatment = null,
-        \DateTime $startsAt,
-        \DateTime $finishesAt
-    ) {
-        $this->patient = $patient;
-        $this->doctor = $doctor;
-        $this->treatment = $treatment;
-        $this->startsAt = $startsAt;
-        $this->finishesAt = $finishesAt;
-        $this->isCanceled = false;
-    }
 
 
     /**
@@ -172,8 +149,8 @@ class Appointment
             return;
         }
 
-        $patient->addAppointment($this);
         $this->patient = $patient;
+        $patient->addAppointment($this);
     }
 
     /**
@@ -248,11 +225,11 @@ class Appointment
     }
 
     /**
-     * @param Treatment $treatment
+     * @param Treatment|null $treatment
      */
-    public function setTreatment(Treatment $treatment)
+    public function setTreatment(Treatment $treatment = null)
     {
-        if ($treatment == $this->treatment) {
+        if ($treatment === $this->treatment) {
             return;
         }
 
@@ -392,6 +369,4 @@ class Appointment
     {
         $this->createdAt = $createdAt;
     }
-
-
 }

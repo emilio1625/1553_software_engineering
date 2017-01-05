@@ -1,0 +1,5 @@
+
+[{% for result in results %}
+    {{ {id: result.id, text: result.__toString}|json_encode|raw }}
+    {% if not loop.last %},{% endif %}
+{% endfor %}]

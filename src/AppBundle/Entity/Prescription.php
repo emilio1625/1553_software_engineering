@@ -77,19 +77,6 @@ class Prescription
      */
     private $createdAt;
 
-    /**
-     * @param Patient $patient
-     * @param Doctor $doctor
-     * @param Appointment $appointment
-     */
-    public function __construct(Patient $patient, Doctor $doctor, Appointment
-        $appointment)
-    {
-        $this->patient = $patient;
-        $this->doctor = $doctor;
-        $this->appointment = $appointment;
-    }
-
 
     /**
      * @return integer

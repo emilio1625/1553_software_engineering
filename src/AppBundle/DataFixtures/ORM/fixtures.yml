@@ -1,9 +1,9 @@
 AppBundle\Entity\Patient:
-    Patient_{1..20}:
+    Patient_{1..30}:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: '50%? password : contraseña'
         gender: '50%? hombre : mujer'
         birthDate: <datetime()>
         email (unique): <email()>
@@ -17,7 +17,7 @@ AppBundle\Entity\Doctor:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: '50%? password : contraseña'
         email (unique): <email()>
         address: <address()>
         phoneNumber: <phoneNumber()>
@@ -35,15 +35,17 @@ AppBundle\Entity\Doctor:
         semblance: <text()>
 
 AppBundle\Entity\Treatment:
-    Treatment_{1..15}:
+    Treatment_{1..5}:
         __construct: ['@Patient_*', '@Doctor_*']
         description: <text()>
         comments: <text()>
         cost: <randomNumber(4)>
 
 AppBundle\Entity\Appointment:
-    Appointment_{1..20}:
-        __construct: ['@Patient_*', '@Doctor_*', '30%? @Treatment_*', <datetime()>, <datetime()>]
+    Appointment_{1..10}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        treatment: '30%? @Treatment_*'
         startsAt: <datetime()>
         startedAt: <datetime()>
         finishesAt: <datetime()>
@@ -52,8 +54,10 @@ AppBundle\Entity\Appointment:
         isCanceled: <boolean(80)>
 
 AppBundle\Entity\MedicalRecord:
-    MedicalRecord_{1..20}:
-        __construct: ['@Patient_*', '@Doctor_*', '@Appointment_<current()>']
+    MedicalRecord_{1..10}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        appointment: '@Appointment_<current()>'
         weight: <randomNumber(2)>
         height: <randomNumber(2)>
         bloodPreasure: <randomNumber(3)>
@@ -88,13 +92,15 @@ AppBundle\Entity\MedicalRecord:
         observations: <text()>
 
 AppBundle\Entity\Prescription:
-    Prescription_{1..15}:
-        __construct: ['@Patient_*', '@Doctor_*', '@Appointment_<current()>']
+    Prescription_{1..10}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        appointment: '@Appointment_<current()>'
         rx: <text()>
         recommendations: <text()>
         notes: <text()>
 
 AppBundle\Entity\Odontogram:
-    Odontogram_{1..15}:
+    Odontogram_{1..10}:
         __construct: ['@Patient_*', '@Appointment_<current()>']
 
