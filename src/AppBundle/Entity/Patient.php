@@ -16,8 +16,9 @@
 namespace AppBundle\Entity;
 
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -29,53 +30,62 @@ class Patient extends User
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\Regex(
+     *     pattern = "/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/",
+     *     message="CURP incorrecto, sólo mayúsculas por favor"
+     * )
      */
     private $curp;
 
     /**
      * @ORM\OneToMany(targetEntity="Treatment", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Treatment[]
      */
     private $treatments;
 
     /**
      * @ORM\OneToMany(targetEntity="Appointment", mappedBy="patient")
      * @ORM\OrderBy({"startsAt" = "DESC", "createdAt" = "DESC"})
+     * @var ArrayCollection|Appointment[]
      */
     private $appointments;
 
     /**
      * @ORM\OneToMany(targetEntity="MedicalRecord", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|MedicalRecord[]
      */
     private $medicalRecords;
 
     /**
      * @ORM\OneToMany(targetEntity="Prescription", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Prescription[]
      */
     private $prescriptions;
 
     /**
      * @ORM\OneToMany(targetEntity="Odontogram", mappedBy="patient")
      * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @var ArrayCollection|Odontogram[]
      */
     private $odontograms;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $note;
 
 
     public function __construct()
     {
-        $this->doctors = new ArrayCollection();
         $this->treatments = new ArrayCollection();
         $this->appointments = new ArrayCollection();
         $this->medicalRecords = new ArrayCollection();
         $this->prescriptions = new ArrayCollection();
         $this->odontograms = new ArrayCollection();
+        $this->roles[] = 'ROLE_PATIENT';
     }
 
     /**
@@ -85,6 +95,7 @@ class Patient extends User
     {
         return $this->curp;
     }
+
     /**
      * @param string $curp
      */
@@ -105,21 +116,20 @@ class Patient extends User
      * @return Treatment|null
      */
     public function getLastTreatment() {
-        return $this->treatments->first();
+        return $this->treatments->last();
     }
 
     /**
      * @param Treatment $treatment
-     * @return boolean
      */
     public function addTreatment(Treatment $treatment)
     {
         if ($this->treatments->contains($treatment)) {
-            return true;
+            return;
         }
 
+        $this->treatments->add($treatment);
         $treatment->setPatient($this);
-        return $this->treatments->add($treatment);
     }
 
     /**
@@ -134,21 +144,20 @@ class Patient extends User
      * @return Appointment|null
      */
     public function getNextAppointment() {
-        return $this->appointments->first();
+        return $this->appointments->last();
     }
 
     /**
      * @param Appointment $appointment
-     * @return boolean
      */
     public function addAppointment(Appointment $appointment)
     {
         if ($this->appointments->contains($appointment)) {
-            return true;
+            return;
         }
 
+        $this->appointments->add($appointment);
         $appointment->setPatient($this);
-        return $this->appointments->add($appointment);
     }
 
     /**
@@ -163,21 +172,20 @@ class Patient extends User
      * @return MedicalRecord|null
      */
     public function getLastMedicalRecord() {
-        return $this->medicalRecords->first();
+        return $this->medicalRecords->last();
     }
 
     /**
      * @param MedicalRecord $medicalRecord
-     * @return boolean
      */
     public function addMedicalRecord(MedicalRecord $medicalRecord)
     {
         if ($this->medicalRecords->contains($medicalRecord)) {
-            return true;
+            return;
         }
 
+        $this->medicalRecords->add($medicalRecord);
         $medicalRecord->setPatient($this);
-        return $this->medicalRecords->add($medicalRecord);
     }
 
     /**
@@ -192,21 +200,20 @@ class Patient extends User
      * @return Prescription|null
      */
     public function getLastPrescription() {
-        return $this->medicalRecords->first();
+        return $this->medicalRecords->last();
     }
 
     /**
      * @param Prescription $prescription
-     * @return boolean
      */
     public function addPrescription(Prescription $prescription)
     {
         if ($this->prescriptions->contains($prescription)) {
-            return true;
+            return;
         }
 
+        $this->prescriptions->add($prescription);
         $prescription->setPatient($this);
-        return $this->prescriptions->add($prescription);
     }
 
     /**
@@ -226,16 +233,15 @@ class Patient extends User
 
     /**
      * @param Odontogram $odontogram
-     * @return boolean
      */
     public function addOdontogram(Odontogram $odontogram)
     {
         if ($this->odontograms->contains($odontogram)) {
-            return true;
+            return;
         }
 
+        $this->odontograms->add($odontogram);
         $odontogram->setPatient($this);
-        return $this->odontograms->add($odontogram);
     }
 
     /**
@@ -252,5 +258,38 @@ class Patient extends User
     public function setNote($note)
     {
         $this->note = $note;
+    }
+
+    public function __toString()
+    {
+        return $this->firstName.' '.$this->lastName;
+    }
+
+
+    /**
+     * @param Appointment $newAppointment
+     * @return boolean
+     */
+    public function isAvailable(Appointment $newAppointment)
+    {
+        $now = new \DateTime();
+        $start2 = clone $newAppointment->getStartsAt();
+        $end2 = clone $newAppointment->getFinishesAt();
+
+        foreach ($this->getAppointments() as $appointment) {
+            if ($appointment->getIsCanceled() || $appointment->getStartsAt() < $now || $appointment === $newAppointment) {
+                continue;
+            }
+            $start1 = clone $appointment->getStartsAt();
+            $end1 = clone $appointment->getFinishesAt();
+            if ($start2 > $start1 && $start2 < $end1) { // start1 <= start2 <= end1
+                return false;
+            } elseif ($end2 > $start1 && $end2 < $end1) { // start1 <= end2 <= end1
+                return false;
+            } elseif ($start2 <= $start1 && $end2 >= $end1) {
+                return false;
+            }
+        }
+        return true;
     }
 }

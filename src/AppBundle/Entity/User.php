@@ -36,6 +36,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\NotBlank(message="El nombre de usuario no puede estar en blanco")
+     * @Assert\Length(
+     *     min="4",
+     *     minMessage="El nombre de usuario debe tener mínimo {{ limit }} caracteres",
+     *     max="12",
+     *     maxMessage="El nombre de usuario no puede ser mayor a {{ limit }} caracteres"
+     * )
      */
     protected $username;
 
@@ -53,31 +60,56 @@ class User implements UserInterface
     /**
      * Used to create and change the user's password
      * @var string
+     * @Assert\NotBlank(groups={"Registration"})
      */
-    protected $plainPasword;
+    protected $plainPassword;
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    protected $roles = [];
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Regex(
+     *     pattern = "\[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}\",
+     *     message = "Nombre no válido"
+     * )
      */
     protected $firstName;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Regex(
+     *     pattern="\[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}\",
+     *     message="Apellidos no válidos"
+     * )
      */
     protected $lastName;
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\Email(
+     *     strict = true,
+     *     checkMX = true,
+     *     checkHost = true,
+     *     message = "Email no válido"
+     * )
      */
     protected $email;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Choice(
+     *     choices = {"hombre", "mujer", "otro"},
+     *     message = "Opcion inválida, elige un genero válido"
+     * )
      */
     protected $gender;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\DateTime()
      */
     protected $birthDate;
 
@@ -88,12 +120,26 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Regex(
+     *     pattern="/\d{10}/",
+     *     message="Télefono no válido, ingresa sólo números"
+     * )
      */
     protected $phoneNumber;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
+     * @Assert\Image(
+     *     mimeTypes={ "image/jpeg", "image/png" },
+     *     minWidth = 320,
+     *     minWidthMessage = "La imagen es muy pequeña",
+     *     minHeight = 320,
+     *     minHeightMessage = "La imagen es muy pequeña",
+     *     detectCorrupted = true,
+     *     corruptedMessage = "La imagen esta corrupta",
+     *     sizeNotDetectedMessage = "No se pudo detectar el tamaño",
+     *     mimeTypesMessage = "La fotografía debe ser jpg o png"
+     * )
      */
     protected $photo;
 
@@ -143,7 +189,18 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // give everyone ROLE_USER!
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return $roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
 
     /**
@@ -170,22 +227,20 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getPlainPasword()
+    public function getPlainPassword()
     {
-        return $this->plainPasword;
+        return $this->plainPassword;
     }
 
     /**
      * @param string $plainPasword
      */
-    public function setPlainPasword($plainPasword)
+    public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
         // Save the user even if only plainPassword changes
         $this->password = null;
     }
-
-
 
     /**
      * Returns the salt that was originally used to encode the password.

@@ -18,6 +18,7 @@ namespace AppBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -46,12 +47,12 @@ class Odontogram
     private $patient;
 
     /**
-     * @ORM\OneToOne(targetEntity="Appointment", inversedBy="odontogram")
+     * @ORM\OneToOne(targetEntity="MedicalRecord", inversedBy="odontogram")
      */
-    private $appointment;
+    private $medicalRecord;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="json_array", nullable=false)
      */
     private $odontogram;
 
@@ -62,14 +63,9 @@ class Odontogram
      */
     private $createdAt;
 
-    /**
-     * @param Patient $patient
-     * @param Appointment $appointment
-     */
-    public function __construct(Patient $patient, Appointment$appointment)
+
+    public function __construct()
     {
-        $this->patient = $patient;
-        $this->appointment = $appointment;
         $this->odontogram = [
             'maxilla' => [
                 'primary' => [
@@ -452,11 +448,6 @@ class Odontogram
                 ]
             ]
         ];
-
-        $lastOdontogram = $this->patient->getLastOdontogram();
-        if ($lastOdontogram) {
-            $this->odontogram = $lastOdontogram->getOdontogram();
-        }
     }
 
 
@@ -506,24 +497,24 @@ class Odontogram
     }
 
     /**
-     * @return Appointment
+     * @return MedicalRecord
      */
-    public function getAppointment()
+    public function getMedicalRecord()
     {
-        return $this->appointment;
+        return $this->medicalRecord;
     }
 
     /**
-     * @param Appointment $appointment
+     * @param MedicalRecord $medicalRecord
      */
-    public function setAppointment(Appointment $appointment)
+    public function setMedicalRecord(MedicalRecord $medicalRecord)
     {
-        if ($appointment === $this->appointment) {
+        if ($medicalRecord === $this->medicalRecord) {
             return;
         }
 
-        $this->appointment = $appointment;
-        $appointment->setOdontogram($this);
+        $this->medicalRecord = $medicalRecord;
+        $medicalRecord->setOdontogram($this);
     }
 
     /**
