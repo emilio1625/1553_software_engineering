@@ -51,7 +51,7 @@ class Treatment
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="treatments", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Patient", inversedBy="treatments", cascade={"persist", "remove"})
      */
     private $patient;
 
@@ -90,7 +90,7 @@ class Treatment
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isFinished;
+    private $isFinished = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -122,7 +122,7 @@ class Treatment
     /**
      * @param string $name
      */
-    public function setFirstName($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -285,5 +285,8 @@ class Treatment
         $this->createdAt = $createdAt;
     }
 
-
+    public function __toString()
+    {
+        return $this->getName() . ' para el paciente ' . $this->getPatient() . ' creado por el doctor ' . $this->getDoctor();
+    }
 }

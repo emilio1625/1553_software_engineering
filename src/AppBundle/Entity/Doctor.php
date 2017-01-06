@@ -18,12 +18,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DoctorRepository")
  * @ORM\Table(name="doctor")
+ * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
  */
 class Doctor extends User
 {
@@ -74,11 +76,7 @@ class Doctor extends User
     private $checkInTime;
 
     /**
-     * @ORM\Column(type="time")
-     * @Assert\Range(
-     *     min = "1 hour",
-     *     max = "11 hours"
-     * )
+     * @ORM\Column(type="dateinterval")
      * @var \DateInterval $workHours
      */
     private $workHours;
@@ -94,10 +92,6 @@ class Doctor extends User
 
     /**
      * @ORM\Column(type="dateinterval")
-     * @Assert\Range(
-     *     min = "1 hour",
-     *     max = "5 hours"
-     * )
      * @var \DateInterval $breakDuration
      */
     private $breakDuration;
@@ -309,30 +303,65 @@ class Doctor extends User
         return $this->firstName.' '.$this->lastName.': '.$this->specialty;
     }
 
+
     /**
      * @param Appointment $newAppointment
      * @return boolean
      */
     public function isAvailable(Appointment $newAppointment)
     {
+
+        $days = [
+            'lunes' => 'Monday',
+            'martes' => 'Tuesday',
+            'miércoles' => 'Wednesday',
+            'jueves' => 'Thursday',
+            'viernes' => 'Friday',
+            'sábado' => 'Saturday',
+            'domingo' => 'Sunday'
+        ];
         $now = new \DateTime();
+        $start2 = clone $newAppointment->getStartsAt();
+
+        if ($start2->format('l') === $days[$this->getDayOff()]) { // es su dia de descanso?
+            return false;
+        }
+
+        $start1 = $this->getCheckInTime()->format('H:i:s');
+        $temp = clone $this->getBreakTime();
+        $end1 = $temp->format('H:i:s');
+        $start2 = $start2->format('H:i:s');
+        $end2 = $newAppointment->getFinishesAt()->format('H:i:s');
+        if (!($start1 < $start2 && $end1 > $end2)) { // no entre su hora de entrada y su hora de comida
+            $start1 = $temp->format('H:i:s');
+            $temp->add($this->getBreakDuration());
+            $end1 = $temp->format('H:i:s');
+            if ($start1 < $end2 && $end1 > $start2) { // si esta en su hora de comida
+                return false;
+            }
+            $start1 = $temp->format('H:i:s');
+            $temp = clone $this->getCheckInTime(); $temp->add($this->getWorkHours());
+            $end1 = $temp->format('H:i:s');
+            if (!($start1 < $start2 && $end1 > $end2)) { // si no esta entre su entrada y su hora de comida
+                return false;
+            }
+        }
+
         $start2 = $newAppointment->getStartsAt();
         $end2 = $newAppointment->getFinishesAt();
 
         foreach ($this->getAppointments() as $appointment) {
-            if ($appointment->getIsCanceled() || $appointment->getFinishesAt() < $now || $appointment === $newAppointment) {
+            if ($appointment === $newAppointment || $appointment->getIsCanceled()
+                || $appointment->getFinishesAt() < $now) {
                 continue;
             }
             $start1 = $appointment->getStartsAt();
             $end1 = $appointment->getFinishesAt();
-            if ($start2 > $start1 && $start2 < $end1) { // start1 <= start2 <= end1
-                return false;
-            } elseif ($end2 > $start1 && $end2 < $end1) { // start1 <= end2 <= end1
-                return false;
-            } elseif ($start2 <= $start1 && $end2 >= $end1) {
+            if (($start1 < $end2) && ($end1 > $start2)) { // si se sobreponen
                 return false;
             }
         }
+
         return true;
     }
 }

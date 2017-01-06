@@ -2,6 +2,12 @@
 
 {% block title %}Editar cita{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet"
+          href="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
+{% endblock stylesheets %}
+
 {% block form %}
     <div class="page-header">
         <h1>Editar cita</h1>
@@ -12,6 +18,15 @@
     <button type="submit" class="btn btn-primary">Agendar</button>
     {{ form_end(appointment_form) }}
 {% endblock form %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/bootstrap/transition.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/locale/es.js') }}"></script>
+    <script src="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
+{% endblock javascripts %}
 
 {% block specific_javascripts %}
     {{ parent() }}
@@ -34,5 +49,44 @@
             3
         );
         {% endif %}
+        $(function () {
+            $('.js-appointment-date').datetimepicker({
+                locale: 'es',
+                format: 'YYYY-MM-DD HH:mm',
+                showClose: true,
+                minDate: moment().add(30, 'minute'),
+                maxDate: moment().add(6, 'month').add(1, 'day'),
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
+                    selectMonth: 'Selecciona un calendario',
+                    prevMonth: 'Mes anterior',
+                    nextMonth: 'Siguiente mes',
+                    selectYear: 'Selecciona un año',
+                    prevYear: 'Año anterior',
+                    nextYear: 'Próximo Año',
+                    pickHour: "Selecciona una hora",
+                    incrementHour:"Aumentar hora",
+                    decrementHour:"Decrementar hora",
+                    pickMinute:"Selecciona un minuto",
+                    incrementMinute:"Incrementar un minuto",
+                    decrementMinute:"Decrementar un minuto",
+                    pickSecond:"Selecciona un segundo",
+                    incrementSecond:"Incrementa un segundo",
+                    decrementSecond:"Decrementa un segundo",
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        });
     </script>
 {% endblock specific_javascripts %}

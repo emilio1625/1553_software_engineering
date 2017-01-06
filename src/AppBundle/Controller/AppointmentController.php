@@ -16,7 +16,6 @@ use AppBundle\Form\AppointmentFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -127,10 +126,26 @@ class AppointmentController extends Controller
     public function editAppointmentAction(Appointment $appointment ,Request $request)
     {
         $user = $this->getUser();
+        if ($user instanceof Doctor) {
+            $canEdit = $appointment->getDoctor() === $user;
+        } elseif ($user instanceof Patient) {
+            $canEdit = $appointment->getPatient() === $user;
+        } else {
+            $canEdit = $this->isGranted('ROLE_ADMIN');
+        }
+        if (!$canEdit) {
+            $this->addFlash('danger', 'No tienes permiso para modificar esa cita');
+            return $this->redirectToRoute('homepage');
+        }
+
+        if ($appointment->getStartsAt() < new \DateTime('now')) {
+            $this->addFlash('danger', 'Esa cita ya se realizó');
+            return $this->redirectToRoute('homepage');
+        }
 
         $form = $this->createForm(AppointmentFormType::class, $appointment, [
             'roles' => $user->getRoles()
-        ])->add('isCanceled', CheckboxType::class);
+        ])->add('isCanceled');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

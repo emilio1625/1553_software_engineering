@@ -43,14 +43,6 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/register", name="patient_register")
-     */
-    public function indexAction($name)
-    {
-        return $this->render('', array('name' => $name));
-    }
-
-    /**
      * @Route("/logout", name="security_logout")
      * @throws \Exception
      */

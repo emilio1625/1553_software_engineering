@@ -25,7 +25,7 @@
     <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('vendor/moment/locale/es.js') }}"></script>
     <script src="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
-    script[src="{{ asset('vendor/moment/min/moment.min.js') }}"]
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
 {% endblock javascripts %}
 
 {% block specific_javascripts %}
@@ -53,7 +53,7 @@
                 locale: 'es',
                 format: 'YYYY-MM-DD HH:mm',
                 showClose: true,
-                minDate: new moment(),
+                minDate: new moment().add(30, 'minute'),
                 maxDate: new moment().add(6, 'month').add(1, 'day'),
                 icons: {
                     time: "fa fa-clock-o",

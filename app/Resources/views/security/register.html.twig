@@ -1,0 +1,163 @@
+{% extends ':form:form.html.twig' %}
+
+{% block title %}Entrar{% endblock title %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet"
+          href="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
+{% endblock stylesheets %}
+
+{% block form %}
+    <div class="container-fluid"><div class="row">
+            <div class="col-md-6">
+                <div class="page-header">
+                    <h1>Registro</h1>
+                </div>
+
+                {{ form_start(form) }}
+                    {{ form_row(form.username) }}
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.plainPassword.first, {'label': 'Password'}) }}
+                    {{ form_row(form.plainPassword.second, {'label': 'Repeat Password'}) }}
+                    {{ form_rest(form) }}
+                <button type="submit" class="btn btn-sucess">Login <span class="fa fa-key"></span></button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock form %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/bootstrap/transition.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/locale/es.js') }}"></script>
+    <script src="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
+{% endblock javascripts %}
+
+{% block specific_javascripts %}
+    <script type="text/javascript">
+        //Función para validar una CURP
+        function curpValida(curp) {
+            var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+                validado = curp.match(re);
+
+            if (!validado)  //Coincide con el formato general?
+                return false;
+
+            //Validar que coincida el dígito verificador
+            function digitoVerificador(curp17) {
+                //Fuente https://consultas.curp.gob.mx/CurpSP/
+                var diccionario  = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+                    lngSuma      = 0.0,
+                    lngDigito    = 0.0;
+                for(var i=0; i<17; i++)
+                    lngSuma = lngSuma + diccionario.indexOf(curp17.charAt(i)) * (18 - i);
+                lngDigito = 10 - lngSuma % 10;
+                if (lngDigito == 10) return 0;
+                return lngDigito;
+            }
+
+            if (validado[2] != digitoVerificador(validado[1]))
+                return false;
+
+            return true; //Validado
+        }
+
+
+        //Handler para el evento cuando cambia el input
+        //Lleva la CURP a mayúsculas para validarlo
+        function validarInput(input) {
+            var $input = $(input);
+            $input.val($(input).val().toUpperCase());
+            var curp = $input.val();
+
+            if (curpValida(curp)) { // Acá se comprueba
+                $input.parent().addClass("has-success");
+                $input.parent().removeClass("has-error");
+            } else {
+                $input.parent().removeClass("has-success");
+                $input.parent().addClass("has-error");
+            }
+        }
+        $(function () {
+            $('#patient_registration_form_birthDate').datetimepicker({
+                locale: 'es',
+                format: 'YYYY-MM-DD',
+                showClose: true,
+                maxDate: new moment(),
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
+                    selectMonth: 'Selecciona un calendario',
+                    prevMonth: 'Mes anterior',
+                    nextMonth: 'Siguiente mes',
+                    selectYear: 'Selecciona un año',
+                    prevYear: 'Año anterior',
+                    nextYear: 'Próximo Año',
+                    pickHour: "Selecciona una hora",
+                    incrementHour:"Aumentar hora",
+                    decrementHour:"Decrementar hora",
+                    pickMinute:"Selecciona un minuto",
+                    incrementMinute:"Incrementar un minuto",
+                    decrementMinute:"Decrementar un minuto",
+                    pickSecond:"Selecciona un segundo",
+                    incrementSecond:"Incrementa un segundo",
+                    decrementSecond:"Decrementa un segundo",
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        });
+        $(function () {
+            $('#doctor_registration_form_birthDate').datetimepicker({
+                locale: 'es',
+                format: 'YYYY-MM-DD',
+                showClose: true,
+                maxDate: new moment(),
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
+                    selectMonth: 'Selecciona un calendario',
+                    prevMonth: 'Mes anterior',
+                    nextMonth: 'Siguiente mes',
+                    selectYear: 'Selecciona un año',
+                    prevYear: 'Año anterior',
+                    nextYear: 'Próximo Año',
+                    pickHour: "Selecciona una hora",
+                    incrementHour:"Aumentar hora",
+                    decrementHour:"Decrementar hora",
+                    pickMinute:"Selecciona un minuto",
+                    incrementMinute:"Incrementar un minuto",
+                    decrementMinute:"Decrementar un minuto",
+                    pickSecond:"Selecciona un segundo",
+                    incrementSecond:"Incrementa un segundo",
+                    decrementSecond:"Decrementa un segundo",
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        });
+    </script>
+{% endblock %}

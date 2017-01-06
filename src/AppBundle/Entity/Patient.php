@@ -18,12 +18,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PatientRepository")
- * @ORM\Table(name="patients")
+ * @ORM\Table(name="patient")
+ * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
  */
 class Patient extends User
 {
@@ -277,16 +279,13 @@ class Patient extends User
         $end2 = clone $newAppointment->getFinishesAt();
 
         foreach ($this->getAppointments() as $appointment) {
-            if ($appointment->getIsCanceled() || $appointment->getStartsAt() < $now || $appointment === $newAppointment) {
+            if ($appointment === $newAppointment || $appointment->getIsCanceled()
+                || $appointment->getFinishesAt() < $now) {
                 continue;
             }
-            $start1 = clone $appointment->getStartsAt();
-            $end1 = clone $appointment->getFinishesAt();
-            if ($start2 > $start1 && $start2 < $end1) { // start1 <= start2 <= end1
-                return false;
-            } elseif ($end2 > $start1 && $end2 < $end1) { // start1 <= end2 <= end1
-                return false;
-            } elseif ($start2 <= $start1 && $end2 >= $end1) {
+            $start1 = $appointment->getStartsAt();
+            $end1 = $appointment->getFinishesAt();
+            if (($start1 < $end2) && ($end1 > $start2)) { // si se sobreponen
                 return false;
             }
         }

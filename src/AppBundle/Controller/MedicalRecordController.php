@@ -11,8 +11,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Admin;
 use AppBundle\Entity\Appointment;
+use AppBundle\Entity\Doctor;
 use AppBundle\Entity\MedicalRecord;
-use AppBundle\Entity\User;
+use AppBundle\Entity\Treatment;
+use AppBundle\Form\MedicalRecordFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -31,11 +33,10 @@ class MedicalRecordController extends Controller
      */
     public function newMedicalRecordAction(Appointment $appointment, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        /** @var User $user */
+        /** @var Doctor|Admin $user */
         $user = $this->getUser();
         $isAdmin = $user instanceof Admin;
-        $medicalRecord = new MedicalRecord();
+        $em = $this->getDoctrine()->getManager();
 
         if ($user !== $appointment->getDoctor()) {
             $this->addFlash('warning', 'Esta cita no te corresponde');
@@ -43,12 +44,14 @@ class MedicalRecordController extends Controller
                 $this->addFlash('danger', 'El registro médico quedará a nombre del médico, pero se registrará que usted lo genero') : $this->addFlash('info', 'El registro médico quedará registrado con usted');
         }
 
-        $isAdmin ?
-            $medicalRecord->setDoctor($appointment->getDoctor()) :
-            $medicalRecord->setDoctor($user);
+
+        $medicalRecord = new MedicalRecord();
+        $treatment = new Treatment();
 
         $form = $this->createForm(MedicalRecordFormType::class, $medicalRecord, [
             'method' => 'PUT',
+            'patient' => $appointment->getPatient(),
+            'treatment' => $treatment,
             'action' => $this->generateUrl(
                 'new_medical_record', [
                 'id' => $appointment->getId()
@@ -58,8 +61,9 @@ class MedicalRecordController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $medicalRecord = $form->getData();
-            $appointment->setFinishedAt(new \DateTime());
+            dump($form->getData());
+
+            $appointment->setFinishedAt(new \DateTime('now'));
 
             $flashText = 'Se ha guardado el registro médico del paciente ' . $medicalRecord->getPatient();
             $redirectRoute = 'doctor_dashboard';
@@ -79,7 +83,7 @@ class MedicalRecordController extends Controller
         $em->flush();
 
         return $this->render(':form/medicalRecord:newMedicalRecord.html.twig', [
-            'medicalRecord_form' => $form->createView()
+            'medical_record_form' => $form->createView()
         ]);
     }
 

@@ -39,23 +39,26 @@ class DoctorRegistrationFormType extends AbstractType
                 'placeholder' => 'Elige un género',
                 'expanded' => true, 'multiple' => false, // radio buttons
                 'choices' => [
-                    'hombre',
-                    'mujer',
-                    'otro'
+                    'hombre' => 'hombre',
+                    'mujer' => 'mujer',
+                    'otro' => 'otro'
                 ]
             ])->add('birthDate', BirthdayType::class, [
                 'widget' => 'single_text'
             ])
             ->add('address')
             ->add('phoneNumber', NumberType::class)
-            // Patient Properties
+            // Doctor Properties
+            ->add('professionalId')
+            ->add($child)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Doctor::class
+            'data_class' => Doctor::class,
+            'validation_groups' => ['Default', 'Registration']
         ]);
     }
 }

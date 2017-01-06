@@ -57,7 +57,6 @@ function autocomplete_field(prefix, entity, listUrl, getUrl, minimum_length) {
         }
     };
     var fieldtocomplete = "#" + prefix + "_form_" + entity;
-    console.log(fieldtocomplete);
     $(fieldtocomplete).autocompleter(options);
 }
 

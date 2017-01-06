@@ -72,7 +72,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string")
      * @Assert\Regex(
-     *     pattern = "\[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}\",
+     *     pattern = "/[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}/",
      *     message = "Nombre no válido"
      * )
      */
@@ -81,7 +81,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string")
      * @Assert\Regex(
-     *     pattern="\[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}\",
+     *     pattern="/[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{1,50}/",
      *     message="Apellidos no válidos"
      * )
      */
@@ -89,6 +89,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\NotBlank()
      * @Assert\Email(
      *     strict = true,
      *     checkMX = true,
@@ -430,7 +431,6 @@ class User implements UserInterface
     }
 
     /**
-     * @Gedmo\Timestampable(on="create")
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -439,8 +439,6 @@ class User implements UserInterface
     }
 
     /**
-     * @Gedmo\Timestampable(on="update", field={"firstName",
-     *     "lastName", "username", "email", "address", "phoneNumber", })
      * @return \DateTime
      */
     public function getModifiedAt()

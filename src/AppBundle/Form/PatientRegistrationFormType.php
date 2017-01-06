@@ -22,7 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class PatientRegistrationForm extends AbstractType
+class PatientRegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -41,9 +41,9 @@ class PatientRegistrationForm extends AbstractType
                 'placeholder' => 'Elige un género',
                 'expanded' => true, 'multiple' => false, // radio buttons
                 'choices' => [
-                    'hombre',
-                    'mujer',
-                    'otro'
+                    'hombre' => 'hombre',
+                    'mujer' => 'mujer',
+                    'otro' => 'otro'
                 ]
             ])->add('birthDate', BirthdayType::class, [
                 'widget' => 'single_text'
@@ -52,7 +52,7 @@ class PatientRegistrationForm extends AbstractType
             ->add('phoneNumber', NumberType::class)
             // Patient Properties
             ->add('curp', TextType::class, [
-                'attr' => ['id' => 'curp'] // for js curp validation
+                'attr' => ['oninput' => 'validarInput(this)'] // for js curp validation
             ])
         ;
     }

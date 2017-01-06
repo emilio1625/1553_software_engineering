@@ -28,9 +28,9 @@ AppBundle\Entity\Doctor:
         patients (unique): '10x @Patient_*'
         dayOff: '50%? sábado : domingo'
         checkInTime: <time()>
+        breakDuration: <(\DateInterval::createFromDateString('1 hours'))>
         workHours: <(\DateInterval::createFromDateString('8 hours'))>
         breakTime: <time()>
-        breakDuration: <(\DateInterval::createFromDateString('1 hours'))>
         semblance: <text()>
 
 AppBundle\Entity\Treatment:

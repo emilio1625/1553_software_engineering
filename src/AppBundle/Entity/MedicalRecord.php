@@ -88,7 +88,7 @@ class MedicalRecord
      * @ORM\Column(type="string")
      * @Assert\Regex(
      *     pattern="/\d{2,3}\/\d{2,3}/",
-     *
+     *     message="Formato no válido especifíquelo como ###/###"
      * )
      */
     private $bloodPreasure;
@@ -121,123 +121,123 @@ class MedicalRecord
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isAlcholic;
+    private $isAlcholic = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSmoker;
+    private $isSmoker = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isDrugAddict;
+    private $isDrugAddict = false;
 
     // Pathological Background
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasDiabetes;
+    private $hasDiabetes = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasHeartDiseases;
+    private $hasHeartDiseases = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasAsma;
+    private $hasAsma = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasHearingImpairment;
+    private $hasHearingImpairment = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasEyesightImpairment;
+    private $hasEyesightImpairment = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasSpeechIpariment;
+    private $hasSpeechIpariment = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasMusculoskeletalDisorders;
+    private $hasMusculoskeletalDisorders = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasEpilepsy;
+    private $hasEpilepsy = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasSinusitis;
+    private $hasSinusitis = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasPhysicalRestictions;
+    private $hasPhysicalRestictions = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasKidneyIllness;
+    private $hasKidneyIllness = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasMentalDisorders;
+    private $hasMentalDisorders = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasHypertension;
+    private $hasHypertension = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasArthritis;
+    private $hasArthritis = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasNoseBleeds;
+    private $hasNoseBleeds = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasMenstrualClamps;
+    private $hasMenstrualClamps = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasBleedingDisorders;
+    private $hasBleedingDisorders = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasIntestinalDisorders;
+    private $hasIntestinalDisorders = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasEatingDisorders;
+    private $hasEatingDisorders = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasHeadeaches;
+    private $hasHeadeaches = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasRecentSurgery;
+    private $hasRecentSurgery = false;
 
     // Doctor Observations
     /**

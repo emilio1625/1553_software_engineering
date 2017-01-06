@@ -1,23 +1,39 @@
-{% extends 'base.html.twig' %}
+{% extends ':form:form.html.twig' %}
 
 {% block title %}Nuevo Registro Medico{% endblock %}
 
-{% block body %}
-    <h1>Nuevo Registro Medico</h1>
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
+{% block form %}
+    <div class="page-header">
+      <h1>Nuevo Registro Médico</h1>
+    </div>
+    {{ form_start(medical_record_form) }}
+        {{ form_widget(medical_record_form) }}
         <button type="submit" class="btn btn-primary">Guardar Registro Medico</button>
-    {{ form_end(form) }}
-    <a href="{{ path('new_treatment') }}" id="url-new-treatment" class="hidden"></a>
+    {{ form_end(medical_record_form) }}
 {% endblock %}
 
 {% block specific_javascripts %}
     <script type="text/javascript">
-        autocomplete_or_new_field(
+        autocomplete_field(
             'medical_record',
-            'treatment',
-            "{{ path('search_treatment') }}",
-            "{{ path('get_treatment') }}"
-        )
+            "appointment",
+            "patient",
+            "{{ path('search_patient') }}",
+            "{{ path('get_patient') }}",
+            3
+        );
+        var options = {
+            url_list: "{{ path('search_patient') }}",
+            url_get: "{{ path('get_patient') }}",
+            otherOptions: {
+                minimumInputLength: 3,
+                theme: 'boostrap',
+                formatNoMatches: 'Sin resultados...',
+                formatSearching: 'Buscando...',
+                formatInputTooShort: 'Escribe al menos ' + 3 + ' caracteres'
+            }
+        };
+        var fieldtocomplete = "#medical_record_form_new_treatment_form_patient";
+        $($(fieldtocomplete).autocompleter(options));
     </script>
-{% endblock specific_javascript %}
+{% endblock specific_javascripts %}

@@ -18,6 +18,7 @@ namespace AppBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Validator\Constraints as AcmeAssert;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -63,8 +64,14 @@ class Appointment
      * @Assert\Range(
      *     min = "now",
      *     max = "+6 months",
-     *     minMessage = "Lo lamento, este sistema no escapaz de volver en el tiempo",
+     *     minMessage = "Este horario esta muy próximo",
      *     maxMessage = "El tiempo máximo de reservación es de 6 meses"
+     * )
+     * @AcmeAssert\RangeTime(
+     *     min = "7 hours",
+     *     minMessage = "Este horario es muy temprano",
+     *     max = "22 hours",
+     *     maxMessage = "Este horario es muy tarde"
      * )
      * @var \DateTime $startsAt
      */

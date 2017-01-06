@@ -27,7 +27,6 @@ class TreatmentRepository extends EntityRepository
         return $this->createQueryBuilder('treatment')
             ->where('treatment.patient = :patient')
             ->andWhere('treatment.isFinished = 0')
-            ->orWhere('treatment.isFinished = null')
             ->orderBy('treatment.createdAt', 'DESC')
             ->setParameter('patient', $patient);
     }

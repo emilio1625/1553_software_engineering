@@ -15,7 +15,9 @@ use AppBundle\Entity\Treatment;
 use AppBundle\Repository\TreatmentRepository;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -28,22 +30,27 @@ class MedicalRecordFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('weight')
-            ->add('height')
+            ->add('weight', IntegerType::class, [
+                'scale' => 4
+            ])
+            ->add('height', IntegerType::class, [
+                'scale' => 2
+            ])
             ->add('bloodPreasure')
             ->add('alergies')
             ->add('job')
             ->add('maritalStatus', ChoiceType::class, [
                 'choices' => [
-                    "Soltero/a",
-                    "Casado/a",
-                    "Divorciado/a",
-                    "Viudo/a"
+                    'Soltero/a' => 'Soltero/a',
+                    'Casado/a' => 'Casado/a',
+                    'Divorciado/a' => 'Divorciado/a',
+                    'Viudo/a' => 'Viudo/a'
                 ]
             ])
             ->add('religion')
             ->add('isAlcholic')
             ->add('isDrugAddict')
+            ->add('isSmoker')
             ->add('hasDiabetes')
             ->add('hasHeartDiseases')
             ->add('hasAsma')
@@ -67,37 +74,41 @@ class MedicalRecordFormType extends AbstractType
             ->add('hasRecentSurgery')
             ->add('observations', TextareaType::class)
             ->add('treatment', EntityType::class, [
-                'placeholder' => 'Elige un tratamiento',
+                'placeholder' => 'Elige un tratamiento, o crea uno nuevo',
+                'required' => false,
                 'class' => Treatment::class,
                 'query_builder' => function(TreatmentRepository $repo) use ($options) {
                     return $repo->createByPatientQueryBuilder($options['patient']);
                 }
             ])
-            ->add('newTreatment', TreatmentFormType::class, [
+            ->add('new_treatment_form', NewTreatmentMedicalRecordFormType::class, [
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                'data' => $options['treatment']
             ])
             ->add('odontogram', AutocompleteType::class, [
                 'class' => Odontogram::class,
+                'required' => false
             ])
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
-                $data = $event->getData();
-                $form = $event->getForm();
-                if (empty($data['treatment']) && !empty($data['newTreatment']['name'])) {
-                    $form->remove('newTreatment');
-                    $form->add('newTreatment', TreatmentFormType::class, array(
-                        'property_path' => 'treatment',
-                    ));
-                }
-            });
         ;
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
+            /*$data = $event->getData();
+            $form = $event->getForm();
+            if (empty($data['treatment']) && !empty($data['new_treatment_form']['name'])) {
+                $form->remove('new_treatment');
+                $form->add('new_treatment', NewTreatmentMedicalRecordFormType::class, array(
+                    'property_path' => 'treatment',
+                ));
+            }*/
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => MedicalRecord::class,
-            'patient' => null
+            'patient' => null,
+            'treatment' => null
         ]);
     }
 }
