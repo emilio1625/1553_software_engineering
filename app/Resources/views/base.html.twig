@@ -12,7 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+        <link rel="stylesheet" href="{{ asset('/Public/css/base.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/nav.css') }}">
     {% endblock %}
@@ -45,22 +45,22 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a class="navbar-brand" href="#">Inicio</a>
+                            <a class="navbar-brand" href="/">Inicio</a>
                         </div>
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Especialidades <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="#">Ortodoncia</a></li>
-                                        <li><a href="#">Odontopetria</a></li>
-                                        <li><a href="#">Endodoncia</a></li>
-                                        <li><a href="#">Maxilofacial</a></li>
+                                        <li><a href="/Ortodoncia">Ortodoncia</a></li>
+                                        <li><a href="Odontopetria">Odontopetria</a></li>
+                                        <li><a href="Endodoncia">Endodoncia</a></li>
+                                        <li><a href="Maxilofacial">Maxilofacial</a></li>
 
                                     </ul>
                                 </li>
-                                <li><a href="#contact">Contacto</a></li>
-                                <li><a href="#contact">¿Quiénes somos?</a></li>
+                                <li><a href="Contacto">Contacto</a></li>
+                                <li><a href="Quienes_Somos">¿Quiénes somos?</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 {% if is_granted('ROLE_USER') %}
