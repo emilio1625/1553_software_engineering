@@ -309,7 +309,6 @@ class Doctor extends User
      */
     public function isAvailable(Appointment $newAppointment)
     {
-
         $days = [
             'lunes' => 'Monday',
             'martes' => 'Tuesday',
@@ -319,20 +318,22 @@ class Doctor extends User
             'sábado' => 'Saturday',
             'domingo' => 'Sunday'
         ];
-
         $now = new \DateTime();
         $start2 = clone $newAppointment->getStartsAt();
 
         if ($start2->format('l') === $days[$this->getDayOff()]) { // es su dia de descanso?
-            return false;
+            return 1;
         }
 
-        $start1 = $this->getCheckInTime()->format('H:i:s');
-        $temp = clone $this->getBreakTime();
-        $end1 = $temp->format('H:i:s');
-        $start2 = $start2->format('H:i:s');
-        $end2 = $newAppointment->getFinishesAt()->format('H:i:s');
-        if (!($start1 < $start2 && $end1 > $end2)) { // si no esta entre su hora de entrada y su hora de comida
+        do {
+            $start1 = $this->getCheckInTime()->format('H:i:s');
+            $temp = clone $this->getBreakTime();
+            $end1 = $temp->format('H:i:s');
+            $start2 = $start2->format('H:i:s');
+            $end2 = $newAppointment->getFinishesAt()->format('H:i:s');
+            if ($start1 < $start2 && $end1 > $end2) { // si esta entre su hora de entrada y su hora de comida
+                break; // válido, continua
+            }
             $start1 = $temp->format('H:i:s');
             $temp->add($this->getBreakDuration());
             $end1 = $temp->format('H:i:s');
@@ -340,12 +341,13 @@ class Doctor extends User
                 return false;
             }
             $start1 = $temp->format('H:i:s');
-            $temp = clone $this->getCheckInTime(); $temp->add($this->getWorkHours());
+            $temp = clone $this->getCheckInTime();
+            $temp->add($this->getWorkHours());
             $end1 = $temp->format('H:i:s');
-            if (!($start1 < $start2 && $end1 > $end2)) { // si no esta entre su entrada y su hora de comida
-                return false;
+            if ($start1 < $start2 && $end1 > $end2) { // si esta entre su entrada y su hora de comida
+                break; // válido continua
             }
-        }
+        } while(false);
 
         $start2 = $newAppointment->getStartsAt();
         $end2 = $newAppointment->getFinishesAt();
