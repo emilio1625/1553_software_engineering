@@ -1,0 +1,91 @@
+{% extends ':form:form.html.twig' %}
+
+{% block title %}Nueva cita{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet"
+          href="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
+{% endblock stylesheets %}
+
+{% block form %}
+    <div class="page-header">
+        <h1>Nueva cita</h1>
+    </div>
+
+    {{ form_start(appointment_form) }}
+        {{ form_widget(appointment_form) }}
+        <button type="submit" class="btn btn-primary">Agendar</button>
+    {{ form_end(appointment_form) }}
+{% endblock form %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/bootstrap/transition.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/locale/es.js') }}"></script>
+    <script src="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    script[src="{{ asset('vendor/moment/min/moment.min.js') }}"]
+{% endblock javascripts %}
+
+{% block specific_javascripts %}
+    <script type="text/javascript">
+        {% if is_granted('ROLE_DOCTOR') %}
+            autocomplete_field(
+                "appointment",
+                "patient",
+                "{{ path('search_patient') }}",
+                "{{ path('get_patient') }}",
+                3
+            );
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') or not is_granted('ROLE_DOCTOR') %}
+            autocomplete_field(
+                "appointment",
+                "doctor",
+                "{{ path('search_doctor') }}",
+                "{{ path('get_doctor') }}",
+                3
+            );
+        {% endif %}
+        $(function () {
+            $('.js-appointment-date').datetimepicker({
+                locale: 'es',
+                format: 'YYYY-MM-DD HH:mm',
+                showClose: true,
+                minDate: new moment(),
+                maxDate: new moment().add(6, 'month').add(1, 'day'),
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
+                    selectMonth: 'Selecciona un calendario',
+                    prevMonth: 'Mes anterior',
+                    nextMonth: 'Siguiente mes',
+                    selectYear: 'Selecciona un año',
+                    prevYear: 'Año anterior',
+                    nextYear: 'Próximo Año',
+                    pickHour: "Selecciona una hora",
+                    incrementHour:"Aumentar hora",
+                    decrementHour:"Decrementar hora",
+                    pickMinute:"Selecciona un minuto",
+                    incrementMinute:"Incrementar un minuto",
+                    decrementMinute:"Decrementar un minuto",
+                    pickSecond:"Selecciona un segundo",
+                    incrementSecond:"Incrementa un segundo",
+                    decrementSecond:"Decrementa un segundo",
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        });
+    </script>
+{% endblock specific_javascripts %}

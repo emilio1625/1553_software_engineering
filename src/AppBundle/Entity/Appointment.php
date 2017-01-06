@@ -17,6 +17,7 @@ namespace AppBundle\Entity;
 
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -57,22 +58,15 @@ class Appointment
     private $medicalRecord;
 
     /**
-     * @ORM\OneToOne(targetEntity="Odontogram", mappedBy="appointment")
-     */
-    private $odontogram;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Treatment", inversedBy="appointments")
-     */
-    private $treatment;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Prescription", mappedBy="appointment")
-     */
-    private $prescription;
-
-    /**
      * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
+     * @Assert\Range(
+     *     min = "now",
+     *     max = "+6 months",
+     *     minMessage = "Lo lamento, este sistema no escapaz de volver en el tiempo",
+     *     maxMessage = "El tiempo máximo de reservación es de 6 meses"
+     * )
+     * @var \DateTime $startsAt
      */
     private $startsAt;
 
@@ -82,8 +76,12 @@ class Appointment
     private $startedAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="dateinterval")
+     * @var \DateInterval $duration
      */
+    private $duration;
+
+    /** @var \DateTime $finishesAt */
     private $finishesAt;
 
     /**
@@ -99,36 +97,13 @@ class Appointment
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isCanceled;
+    private $isCanceled = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-
-
-    /**
-     * @param $patient
-     * @param $doctor
-     * @param $treatment
-     * @param $startsAt
-     * @param $finishesAt
-     */
-    public function __construct(
-        Patient $patient,
-        Doctor $doctor,
-        Treatment $treatment = null,
-        \DateTime $startsAt,
-        \DateTime $finishesAt
-    ) {
-        $this->patient = $patient;
-        $this->doctor = $doctor;
-        $this->treatment = $treatment;
-        $this->startsAt = $startsAt;
-        $this->finishesAt = $finishesAt;
-        $this->isCanceled = false;
-    }
 
 
     /**
@@ -172,8 +147,8 @@ class Appointment
             return;
         }
 
-        $patient->addAppointment($this);
         $this->patient = $patient;
+        $patient->addAppointment($this);
     }
 
     /**
@@ -219,69 +194,6 @@ class Appointment
     }
 
     /**
-     * @return Odontogram
-     */
-    public function getOdontogram()
-    {
-        return $this->odontogram;
-    }
-
-    /**
-     * @param Odontogram $odontogram
-     */
-    public function setOdontogram(Odontogram $odontogram)
-    {
-        if ($odontogram === $this->odontogram) {
-            return;
-        }
-
-        $odontogram->setAppointment($this);
-        $this->odontogram = $odontogram;
-    }
-
-    /**
-     * @return Treatment
-     */
-    public function getTreatment()
-    {
-        return $this->treatment;
-    }
-
-    /**
-     * @param Treatment $treatment
-     */
-    public function setTreatment(Treatment $treatment)
-    {
-        if ($treatment == $this->treatment) {
-            return;
-        }
-
-        $this->treatment = $treatment;
-        $treatment->addAppointment($this);
-    }
-
-    /**
-     * @return Prescription
-     */
-    public function getPrescription()
-    {
-        return $this->prescription;
-    }
-
-    /**
-     * @param Prescription $prescription
-     */
-    public function setPrescription(Prescription $prescription)
-    {
-        if ($prescription === $this->prescription) {
-            return;
-        }
-
-        $this->prescription = $prescription;
-        $prescription->setAppointment($this);
-    }
-
-    /**
      * @return \DateTime
      */
     public function getStartsAt()
@@ -314,18 +226,41 @@ class Appointment
     }
 
     /**
+     * @return \DateInterval
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param \DateInterval $duration
+     */
+    public function setDuration(\DateInterval $duration)
+    {
+        $this->duration = $duration;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getFinishesAt()
     {
+        if (null === $this->finishesAt) {
+            $this->finishesAt = clone $this->getStartsAt();
+            $this->finishesAt->add($this->getDuration());
+        }
         return $this->finishesAt;
     }
 
     /**
      * @param \DateTime $finishesAt
      */
-    public function setFinishesAt(\DateTime $finishesAt)
+    public function setFinishesAt($finishesAt)
     {
+        if (null === $this->getDuration()) {
+            $this->setDuration($this->getStartsAt()->diff($finishesAt));
+        }
         $this->finishesAt = $finishesAt;
     }
 
@@ -393,5 +328,9 @@ class Appointment
         $this->createdAt = $createdAt;
     }
 
-
+    public function __toString()
+    {
+        return 'Cita agendada para' . $this->getPatient() . 'con el doctor' . $this->getDoctor()
+            . 'para el día' . $this->getStartsAt()->format('d-m-Y H:i');
+    }
 }

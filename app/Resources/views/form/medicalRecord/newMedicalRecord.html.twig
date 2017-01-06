@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Registro Medico{% endblock %}
+
+{% block body %}
+    <h1>Nuevo Registro Medico</h1>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Guardar Registro Medico</button>
+    {{ form_end(form) }}
+    <a href="{{ path('new_treatment') }}" id="url-new-treatment" class="hidden"></a>
+{% endblock %}
+
+{% block specific_javascripts %}
+    <script type="text/javascript">
+        autocomplete_or_new_field(
+            'medical_record',
+            'treatment',
+            "{{ path('search_treatment') }}",
+            "{{ path('get_treatment') }}"
+        )
+    </script>
+{% endblock specific_javascript %}

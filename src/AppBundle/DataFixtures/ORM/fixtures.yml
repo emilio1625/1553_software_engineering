@@ -1,9 +1,9 @@
 AppBundle\Entity\Patient:
-    Patient_{1..20}:
+    Patient_{1..30}:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: '50%? password : contraseña'
         gender: '50%? hombre : mujer'
         birthDate: <datetime()>
         email (unique): <email()>
@@ -17,7 +17,7 @@ AppBundle\Entity\Doctor:
         firstName: <firstName()>
         lastName: <lastName()>
         username (unique): <username()>
-        password: <password()>
+        plainPassword: '50%? password : contraseña'
         email (unique): <email()>
         address: <address()>
         phoneNumber: <phoneNumber()>
@@ -26,34 +26,39 @@ AppBundle\Entity\Doctor:
         specialty: <word()>
         professionalId (unique): <ean13()>
         patients (unique): '10x @Patient_*'
-        workHoursStart: <datetime()>
-        workHoursEnd: <datetime()>
-        lunchStart: <datetime()>
-        lunchEnd: <datetime()>
-        workDaysStart: <word()>
-        workDaysEnd: <word()>
+        dayOff: '50%? sábado : domingo'
+        checkInTime: <time()>
+        workHours: <(\DateInterval::createFromDateString('8 hours'))>
+        breakTime: <time()>
+        breakDuration: <(\DateInterval::createFromDateString('1 hours'))>
         semblance: <text()>
 
 AppBundle\Entity\Treatment:
     Treatment_{1..15}:
-        __construct: ['@Patient_*', '@Doctor_*']
+        name: <sentence()>
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
         description: <text()>
         comments: <text()>
-        cost: <randomNumber(4)>
+        cost: <randomNumber(5)>
+        isFinished: '50? true : false'
 
 AppBundle\Entity\Appointment:
-    Appointment_{1..20}:
-        __construct: ['@Patient_*', '@Doctor_*', '30%? @Treatment_*', <datetime()>, <datetime()>]
-        startsAt: <datetime()>
-        startedAt: <datetime()>
-        finishesAt: <datetime()>
-        finishedAt: <datetime()>
+    Appointment_{1..100}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        startsAt: <dateTimeBetween("now", "+ 6 months")>
+        startedAt: <dateTimeBetween("now", "+ 6 months")>
+        duration: <(\DateInterval::createFromDateString('2 hours'))>
         notes: <text()>
         isCanceled: <boolean(80)>
 
 AppBundle\Entity\MedicalRecord:
-    MedicalRecord_{1..20}:
-        __construct: ['@Patient_*', '@Doctor_*', '@Appointment_<current()>']
+    MedicalRecord_{1..100}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        appointment (unique): '@Appointment_<current()>'
+        treatment: '30%? @Treatment_*'
         weight: <randomNumber(2)>
         height: <randomNumber(2)>
         bloodPreasure: <randomNumber(3)>
@@ -88,13 +93,16 @@ AppBundle\Entity\MedicalRecord:
         observations: <text()>
 
 AppBundle\Entity\Prescription:
-    Prescription_{1..15}:
-        __construct: ['@Patient_*', '@Doctor_*', '@Appointment_<current()>']
+    Prescription_{1..50}:
+        patient: '@Patient_*'
+        doctor: '@Doctor_*'
+        medicalRecord (unique): '@MedicalRecord_*'
         rx: <text()>
         recommendations: <text()>
         notes: <text()>
 
 AppBundle\Entity\Odontogram:
-    Odontogram_{1..15}:
-        __construct: ['@Patient_*', '@Appointment_<current()>']
+    Odontogram_{1..30}:
+        patient: '@Patient_*'
+        medicalRecord (unique): '@MedicalRecord_*'
 
