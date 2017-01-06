@@ -1,0 +1,66 @@
+{% extends '::base.html.twig' %}
+
+{% block specific_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/Public/css/whoweare.css') }}">
+{% endblock specific_stylesheets %}
+
+{% block content %}
+
+    <!-- Carousel
+    ================================================== -->
+    <div  class="container marketing" id="hola">
+
+        <!-- Three columns of text below the carousel -->
+        <div class="row">
+
+            <div class="col-lg-4">
+                <img class="img-circle" src="{{asset('/Public/image/Dentista0.jpg')}}" alt="Generic placeholder image" width="140" height="140">
+                <h2>Victor Segura García</h2>
+                <h4>Ortodoncia </h4>
+                <p><a class="btn btn-default" href="#" role="button">Agendar Cita&raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <img class="img-circle" src="{{asset('/Public/image/Dentista1.jpg')}}" alt="Generic placeholder image" width="140" height="140">
+                <h2>Gisela Fuentes González</h2>
+                <h4>Ortodoncia</h4>
+                <p><a class="btn btn-default" href="#" role="button">Agendar Cita &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <img class="img-circle" src="{{asset('/Public/image/Dentista0.jpg')}}" alt="Generic placeholder image" width="140" height="140">
+                <h2>Jorge González Trejo</h2>
+                <h4>Odontopediatria</h4>
+                <p><a class="btn btn-default" href="#" role="button">Agendar Cita &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+        </div><!-- /.row -->
+
+        <div class="row" id="Espacio">
+            <div class="col-lg-5">
+                <img class="img-circle" src="{{asset('/Public/image/Dentista0.jpg')}}" alt="Generic placeholder image" width="140" height="140">
+                <h2>Mario Sánchez Torres</h2>
+                <h4>Endodoncia</h4>
+                <p><a class="btn btn-default" href="#" role="button">Agendar Cita &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-5">
+                <img class="img-circle" src="{{asset('/Public/image/Dentista0.jpg')}}" alt="Generic placeholder image" width="140" height="140">
+                <h2>Alejandro Montaño</h2>
+                <h4>Cirugía Maxilofacial</h4>
+                <p><a class="btn btn-default" href="#" role="button">Agendar Cita &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+
+        </div>
+
+    </div><!-- /.container -->
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+
+{% endblock content %}
+
+{% block specific_javascripts %}
+    <script src="{{ asset('vendor/bootstrap/carousel.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/transition.js') }}"></script>
+{% endblock specific_javascripts %}
+
+

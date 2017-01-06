@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Doctor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -29,11 +30,11 @@ class DoctorController extends Controller
     {
         /** @var User $user */
         $user = $this->getUser();
-        return new Response('Hola '.$user->getFirstName().' '.$user->getLastName());
+        return new Response('<!doctype html><html lang="es"><head><meta charset="UTF-8"></head><body>Hola '.$user->getFirstName().' '.$user->getLastName().'</body></html>');
     }
 
     /**
-     * @Security("is_granted('IS_AUTHENTICATED_ANONYMOUSLY')")
+     * @Security("is_granted('ROLE_USER')")
      * @Route(
            "/search",
            name="search_doctor",
@@ -45,13 +46,13 @@ class DoctorController extends Controller
     public function searchAction(Request $request)
     {
         $query = $request->query->get('q');
-        $doctors = $this->getDoctrine()->getRepository('AppBundle:Doctor')->findNameLike($query);
+        $doctors = $this->getDoctrine()->getRepository(Doctor::class)->findNameLike($query);
         return $this->render('search.json.twig', ['results' => $doctors]);
     }
 
     /**
      * @Route(
-           "/get/doctor/{id}",
+           "/get/{id}",
            name="get_doctor",
            defaults={"_format"="json"},
            condition="request.isXmlHttpRequest()"
@@ -60,7 +61,7 @@ class DoctorController extends Controller
      */
     public function getAction($id = null)
     {
-        if (null === $doctor = $this->getDoctrine()->getRepository('AppBundle:Doctor')->find($id)) {
+        if (null === $doctor = $this->getDoctrine()->getRepository(Doctor::class)->find($id)) {
             throw $this->createNotFoundException();
         }
         return $this->json($doctor->__toString());

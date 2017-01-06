@@ -13,6 +13,7 @@ use AppBundle\Entity\Doctor;
 use AppBundle\Entity\Patient;
 use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,19 +23,34 @@ class AppointmentFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        if ($options['isDoctor']) {
+        $roles = $options['roles'];
+        if (in_array('ROLE_DOCTOR', $roles) || in_array('ROLE_ADMIN', $roles)) {
             $builder->add('patient', AutocompleteType::class, [
                 'class' => Patient::class
             ]);
-        } else {
+        } elseif (in_array('ROLE_PATIENT', $roles) || in_array('ROLE_ADMIN', $roles)) {
             $builder->add('doctor', AutocompleteType::class, [
                 'class' => Doctor::class
             ]);
         }
         $builder
-            ->add('startsAt', DateTimeType::class)
-            ->add('finishesAt', DateTimeType::class)
+            ->add('startsAt', DateTimeType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'js-appointment-date'
+                ]
+            ])
+            ->add('duration', DateIntervalType::class, [
+                'hours' => [
+                    1 => 1,
+                    2 => 2,
+                    3 => 3
+                ],
+                'with_years' => false,
+                'with_months' => false,
+                'with_days' => false,
+                'with_hours' => true,
+            ])
             ->add('notes', TextareaType::class)
         ;
     }
@@ -43,7 +59,7 @@ class AppointmentFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Appointment::class,
-            'isDoctor' => false
+            'roles' => ['ROLE_PATIENT']
         ]);
     }
 }

@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/select2/select2-bootstrap.css') }}">
 {% endblock specific_stylesheets %}
-
 {% block content %}
 
     <div class="container main-content">
@@ -21,7 +20,9 @@
 
 {% endblock content %}
 
-{% block specific_javascripts %}
+{% block javascripts %}
+    {{ parent() }}
+    {% block jquery %}<script src="{{ asset('vendor/jquery/dist/jquery.min.js') }}"></script>{% endblock jquery %}
     <script src="{{ asset('vendor/select2/select2.js') }}"></script>
     <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-select2.js') }}"></script>
     <script src="{{ asset('js/form.js') }}"></script>

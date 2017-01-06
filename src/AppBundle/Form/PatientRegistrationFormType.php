@@ -10,13 +10,14 @@ namespace AppBundle\Form;
 
 
 use AppBundle\Entity\Patient;
-use Nelmio\Alice\support\extensions\CustomProcessor;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,22 +28,32 @@ class PatientRegistrationForm extends AbstractType
     {
         $builder
             // User Properties
-            ->add('username')
+            ->add('username', TextType::class, [
+                'trim' => true
+            ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class
             ])
             ->add('firstName')
             ->add('lastName')
-            ->add('email')
+            ->add('email', EmailType::class)
             ->add('gender', ChoiceType::class, [
-                'hombre',
-                'mujer',
-                'otro'
-            ])->add('birthDate', DateType::class)
+                'placeholder' => 'Elige un género',
+                'expanded' => true, 'multiple' => false, // radio buttons
+                'choices' => [
+                    'hombre',
+                    'mujer',
+                    'otro'
+                ]
+            ])->add('birthDate', BirthdayType::class, [
+                'widget' => 'single_text'
+            ])
             ->add('address')
             ->add('phoneNumber', NumberType::class)
-            // Patient Type
-            ->add('curp')
+            // Patient Properties
+            ->add('curp', TextType::class, [
+                'attr' => ['id' => 'curp'] // for js curp validation
+            ])
         ;
     }
 
