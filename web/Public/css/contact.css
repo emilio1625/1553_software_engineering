@@ -1,0 +1,43 @@
+/*!
+ * Copyright (c) 2016. ingenioWeb
+ * Author(s): Bustos
+ * Last Modified: 5/01/17 7:33 PM
+ *
+ */
+/* CUSTOMIZE THE container marketing
+-------------------------------------------------- */
+
+
+.logo0{
+    width: 150px;
+}
+.logo1{
+    width: 428px;
+    height: 125px;
+    margin-left: -10px;
+    margin-top: 2px;
+}
+
+#logoIng{
+    margin-top: -43px;
+}
+
+a {
+    color: #33b7ac;
+    text-decoration: none;
+}
+
+body {
+    background-color: #777777;
+    color: #eeeeee;
+}
+
+iframe{
+    width: 350px;
+    height: 350px;
+    margin-left:40px;
+    allowfullscreen="";
+}
+#informacion{
+   margin-top: 250px;
+}

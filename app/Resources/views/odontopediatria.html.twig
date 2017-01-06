@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block specific_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/Public/css/Special.css') }}">
+{% endblock specific_stylesheets %}
+{% block content %}
+    <div class="container" id="texto">
+        <p id="tittle"> ¿Qué es la odontopediatria?</p>
+        <p id="content">
+            La odontopediatría es la rama de la odontología encargada de tratar a los niños.
+            El odontopediatra será, por tanto, el encargado de explorar y tratar a niños y recién nacidos.
+            También se encarga de detectar posibles anomalías en la posición de los maxilares o dientes para remitir al ortodoncista,
+            especialista en ortodoncia, y de hacer un tratamiento restaurador en caso de necesitarlo. El tratamiento restaurador
+            principalmente se compone de tratar los traumatismos, usar selladores que tienen la función de obturar levemente
+            los surcos y fisuras de las piezas dentales sin apenas quitar material dental para evitar posibles caries, y en tratar
+            las caries producidas y sus consecuencias.
+        </p>
+        <h6>Wikipedia,Odontopediatría, "https://es.wikipedia.org/wiki/Odontopediatría"</h6>
+    </div>
+
+{% endblock content %}

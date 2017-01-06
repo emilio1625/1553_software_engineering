@@ -5,18 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Emilio Cabrera">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('/Public/image/NINOS.jpg') }}" />
 
-    <title>{% block title %}Odontología Integral{{ app.user ? app.user.username : ''}}{% endblock %}</title>
+    <title>{% block title %}Odontología Infantil{{ app.user ? app.user.username : ''}}{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
     {% block stylesheets %}
-<<<<<<< HEAD
+<!-- HEAD -->
         <link rel="stylesheet" href="{{ asset('/Public/css/base.css') }}">
-=======
+<!--=======-->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ asset('css/base.css') }}">
->>>>>>> aff35c50f26c18bb81551a333c9bab6b38acf1e8
+<!-- aff35c50f26c18bb81551a333c9bab6b38acf1e8-->
         <link rel="stylesheet" href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/nav.css') }}">
     {% endblock %}
@@ -54,7 +54,7 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Especialidades <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/Ortodoncia">Ortodoncia</a></li>
-                                        <li><a href="Odontopetria">Odontopetria</a></li>
+                                        <li><a href="Odontopediatria">Odontopediatria</a></li>
                                         <li><a href="Endodoncia">Endodoncia</a></li>
                                         <li><a href="Maxilofacial">Maxilofacial</a></li>
 
@@ -133,7 +133,9 @@
     {% block footer %}
         <footer class="container" style = "margin-top: 10%">
             <p class="pull-right"><a href="#">Back to top</a></p>
-            <p>&copy; IngenioWeb.&middot; <a href="#">Privacidad</a> &middot; <a href="#">Terminos</a></p>
+
+            <p><img id = "logoIng" src="{{asset('/Public/image/IngenioWeb.png')}}"  > &copy; IngenioWeb.&middot;  <a href="#">Privacidad</a> &middot; <a href="#">Terminos</a></p>
+
         </footer>
     {% endblock footer %}
 

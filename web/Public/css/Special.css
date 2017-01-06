@@ -1,0 +1,52 @@
+/*!
+ * Copyright (c) 2016. ingenioWeb
+ * Author(s): emilio1625
+ * Last Modified: 18/12/16 11:46 PM
+ *
+ */
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+.logo0{
+    width: 150px;
+}
+.logo1{
+    width: 428px;
+    height: 125px;
+    margin-left: -10px;
+    margin-top: 2px;
+}
+
+a {
+    color: #33b7ac;
+    text-decoration: none;
+}
+
+body {
+    background-color: #777777;
+    color: #eeeeee;
+}
+
+#logoIng{
+    margin-top: -27px;
+}
+
+#texto{
+    margin-top: 220px;
+    color: ghostwhite;
+    margin-bottom: -50px;
+}
+#tittle{
+    color: #83ff00;
+
+}
+#content{
+    font-family: sans-serif;
+    font-size: 100%;
+    font-style: italic;
+    text-align: justify;
+}
+
+h6{
+    color: #BBFFF1;
+}
