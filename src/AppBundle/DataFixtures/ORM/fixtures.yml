@@ -27,10 +27,10 @@ AppBundle\Entity\Doctor:
         professionalId (unique): <ean13()>
         patients (unique): '10x @Patient_*'
         dayOff: '50%? sábado : domingo'
-        checkInTime: <time()>
+        checkInTime: <(\DateTime('2000-00-00 7:00:00'))>
         breakDuration: <(\DateInterval::createFromDateString('1 hours'))>
-        workHours: <(\DateInterval::createFromDateString('8 hours'))>
-        breakTime: <time()>
+        workHours: <(\DateInterval::createFromDateString('9 hours'))>
+        breakTime: <(\DateTime('2000-00-00 7:00:00'))>
         semblance: <text()>
 
 AppBundle\Entity\Treatment:

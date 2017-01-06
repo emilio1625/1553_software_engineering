@@ -14,6 +14,7 @@ use AppBundle\Form\DoctorRegistrationFormType;
 use AppBundle\Form\PatientRegistrationFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
@@ -26,9 +27,14 @@ class UserController extends Controller
         $form = $this->createForm(PatientRegistrationFormType::class);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var Patient $patient */
             $patient = $form->getData();
+            /** @var UploadedFile $photo */
+            $photo = $patient->getPhoto();
+            $fileName = $patient->getUsername() . '.' . $photo->guessExtension();
+            $photo->move($this->getParameter('doctor_photos_directory'), $fileName);
+            $patient->setPhoto($fileName);
             $em = $this->getDoctrine()->getManager();
             $em->persist($patient);
             $em->flush();
@@ -41,8 +47,6 @@ class UserController extends Controller
                     'main'
                 );
         }
-
-        $form = $this->createForm(PatientRegistrationFormType::class);
         return $this->render(':security:register.html.twig', [
             'form' => $form->createView()
         ]);
@@ -54,16 +58,21 @@ class UserController extends Controller
      */
     public function registerDoctorAction(Request $request)
     {
-        $form = $this->createForm(PatientRegistrationFormType::class);
+        $form = $this->createForm(DoctorRegistrationFormType::class);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var Doctor $doctor */
             $doctor = $form->getData();
+            /** @var UploadedFile $photo */
+            $photo = $doctor->getPhoto();
+            $fileName = $doctor->getUsername() . '.' . $photo->guessExtension();
+            $photo->move($this->getParameter('doctor_photos_directory'), $fileName);
+            $doctor->setPhoto($fileName);
             $em = $this->getDoctrine()->getManager();
             $em->persist($doctor);
             $em->flush();
-            $this->addFlash('success', 'Bienvenido '.$doctor->getFirstName());
+            $this->addFlash('success', 'Bienvenido '. $doctor->getFirstName());
             return $this->get('security.authentication.guard_handler')
                 ->authenticateUserAndHandleSuccess(
                     $doctor,
@@ -72,11 +81,10 @@ class UserController extends Controller
                     'main'
                 );
         }
-
-        $form = $this->createForm(DoctorRegistrationFormType::class);
         return $this->render(':security:register.html.twig', [
             'form' => $form->createView()
         ]);
 
     }
+
 }

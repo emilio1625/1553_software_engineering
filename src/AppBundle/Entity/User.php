@@ -37,10 +37,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", unique=true)
      * @Assert\NotBlank(message="El nombre de usuario no puede estar en blanco")
+     * @Assert\Regex(
+     *     pattern="/(?=^.{3,20}$)^[a-zA-Z][a-zA-Z0-9]*[._-]?[a-zA-Z0-9]+$/",
+     *     message="Ese no es un nombre de usuario válido . _."
+     * )
      * @Assert\Length(
      *     min="4",
      *     minMessage="El nombre de usuario debe tener mínimo {{ limit }} caracteres",
-     *     max="12",
+     *     max="16",
      *     maxMessage="El nombre de usuario no puede ser mayor a {{ limit }} caracteres"
      * )
      */

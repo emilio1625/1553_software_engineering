@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DoctorRepository")
  * @ORM\Table(name="doctor")
- * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
+ * @UniqueEntity(fields={"email", "username", "professionalId"}, message="It looks like your already have an account!")
  */
 class Doctor extends User
 {
@@ -190,7 +190,6 @@ class Doctor extends User
 
     /**
      * @param Appointment $appointment
-     * @return boolean
      */
     public function addAppointment(Appointment $appointment)
     {
@@ -320,6 +319,7 @@ class Doctor extends User
             'sábado' => 'Saturday',
             'domingo' => 'Sunday'
         ];
+
         $now = new \DateTime();
         $start2 = clone $newAppointment->getStartsAt();
 
@@ -332,11 +332,11 @@ class Doctor extends User
         $end1 = $temp->format('H:i:s');
         $start2 = $start2->format('H:i:s');
         $end2 = $newAppointment->getFinishesAt()->format('H:i:s');
-        if (!($start1 < $start2 && $end1 > $end2)) { // no entre su hora de entrada y su hora de comida
+        if (!($start1 < $start2 && $end1 > $end2)) { // si no esta entre su hora de entrada y su hora de comida
             $start1 = $temp->format('H:i:s');
             $temp->add($this->getBreakDuration());
             $end1 = $temp->format('H:i:s');
-            if ($start1 < $end2 && $end1 > $start2) { // si esta en su hora de comida
+            if ($start1 < $end2 && $end1 > $start2) { // esta en su hora de comida
                 return false;
             }
             $start1 = $temp->format('H:i:s');

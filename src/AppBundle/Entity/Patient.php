@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PatientRepository")
  * @ORM\Table(name="patient")
- * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
+ * @UniqueEntity(fields={"username", "email", "curp"}, message="It looks like your already have an account!")
  */
 class Patient extends User
 {

@@ -50,7 +50,6 @@
 
             //Validar que coincida el dígito verificador
             function digitoVerificador(curp17) {
-                //Fuente https://consultas.curp.gob.mx/CurpSP/
                 var diccionario  = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
                     lngSuma      = 0.0,
                     lngDigito    = 0.0;
@@ -61,10 +60,7 @@
                 return lngDigito;
             }
 
-            if (validado[2] != digitoVerificador(validado[1]))
-                return false;
-
-            return true; //Validado
+            return validado[2] == digitoVerificador(validado[1]); //Validado
         }
 
 
@@ -87,6 +83,7 @@
             $('#patient_registration_form_birthDate').datetimepicker({
                 locale: 'es',
                 format: 'YYYY-MM-DD',
+                viewMode: 'years',
                 showClose: true,
                 maxDate: new moment(),
                 icons: {
@@ -125,6 +122,7 @@
             $('#doctor_registration_form_birthDate').datetimepicker({
                 locale: 'es',
                 format: 'YYYY-MM-DD',
+                viewMode: 'years',
                 showClose: true,
                 maxDate: new moment(),
                 icons: {
@@ -146,6 +144,65 @@
                     selectYear: 'Selecciona un año',
                     prevYear: 'Año anterior',
                     nextYear: 'Próximo Año',
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        });
+        $(function () {
+            $('#doctor_registration_form_breakTime').datetimepicker({
+                locale: 'es',
+                format: 'HH:mm',
+                showClose: true,
+                minDate: moment({hour: 7, minute: 00}),
+                maxDate: moment({hour: 22, minute: 00}),
+                stepping: 30,
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
+                    pickHour: "Selecciona una hora",
+                    incrementHour:"Aumentar hora",
+                    decrementHour:"Decrementar hora",
+                    pickMinute:"Selecciona un minuto",
+                    incrementMinute:"Incrementar un minuto",
+                    decrementMinute:"Decrementar un minuto",
+                    pickSecond:"Selecciona un segundo",
+                    incrementSecond:"Incrementa un segundo",
+                    decrementSecond:"Decrementa un segundo",
+                    selectTime:"Selecciona una fecha"
+                }
+            });
+        })
+        ;$(function () {
+            $('#doctor_registration_form_checkInTime').datetimepicker({
+                locale: 'es',
+                format: 'HH:mm',
+                showClose: true,
+                minDate: moment({hour: 7, minute: 00}),
+                maxDate: moment({hour: 22, minute: 00}),
+                stepping: 30,
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-crosshairs',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times-circle'
+                },
+                tooltips: {
+                    close: 'Cerrar el calendario',
                     pickHour: "Selecciona una hora",
                     incrementHour:"Aumentar hora",
                     decrementHour:"Decrementar hora",

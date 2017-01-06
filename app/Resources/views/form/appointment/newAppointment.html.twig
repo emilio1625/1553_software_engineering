@@ -53,8 +53,9 @@
                 locale: 'es',
                 format: 'YYYY-MM-DD HH:mm',
                 showClose: true,
-                minDate: new moment().add(30, 'minute'),
-                maxDate: new moment().add(6, 'month').add(1, 'day'),
+                minDate: moment().add(1, 'hour').startOf('hour'),
+                maxDate: moment().add(6, 'month').add(1, 'day'),
+                stepping: 30,
                 icons: {
                     time: "fa fa-clock-o",
                     date: "fa fa-calendar",

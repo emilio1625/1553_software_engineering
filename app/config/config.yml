@@ -7,6 +7,10 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
+    doctor_photos_directory: '%kernel.root_dir%/../web/uploads/photos/doctor'
+    patient_photos_directory: '%kernel.root_dir%/../web/uploads/photos/patient'
+
+
 
 framework:
     #esi:             ~
