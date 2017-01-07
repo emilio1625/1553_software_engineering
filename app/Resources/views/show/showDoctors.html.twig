@@ -1,0 +1,23 @@
+{%  extends '::base.html.twig' %}
+
+{% block content %}
+    <div class="container main-content marketing">
+        <div class="row">
+            {% for doctor in doctors %}
+            {% if loop.index % 3 == 1  %}
+        </div><!-- /.row -->
+        <div class="row">
+            {% endif %}
+            <div class="col-sm-4 text-center">
+                <img class="img-circle" src="http://placehold.it/140x140?text=doctor+1" alt="Generic placeholder image" width="140" height="140">
+                <h2 class="lead">{{ doctor.firstName }} {{ doctor.lastName }} <small>{{ doctor.specialty }}</small></h2>
+                <p>
+                    {{ doctor.semblance }}
+                </p>
+                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            </div><!-- /.col-md-4 -->
+            {% endfor %}
+        </div><!-- /.row -->
+
+    </div>
+{% endblock %}

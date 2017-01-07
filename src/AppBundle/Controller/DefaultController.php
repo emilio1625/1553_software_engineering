@@ -8,6 +8,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Doctor;
+use AppBundle\Repository\DoctorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -20,5 +22,13 @@ class DefaultController extends Controller
     public function indexAction()
     {
         return $this->render('::index.html.twig');
+    }
+
+    /**
+     * @Route("/doctors", name="show_doctors")
+     */
+    public function showDoctorsAction() {
+        $doctors = $this->getDoctrine()->getRepository(Doctor::class)->findAll();
+        return $this->render('show/showDoctors.html.twig', ['doctors' => $doctors]);
     }
 }

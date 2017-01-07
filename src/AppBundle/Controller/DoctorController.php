@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,9 +29,7 @@ class DoctorController extends Controller
      */
     public function indexAction()
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        return new Response('<!doctype html><html lang="es"><head><meta charset="UTF-8"></head><body>Hola '.$user->getFirstName().' '.$user->getLastName().'</body></html>');
+        return $this->redirectToRoute('show_patients');
     }
 
     /**
@@ -65,5 +64,17 @@ class DoctorController extends Controller
             throw $this->createNotFoundException();
         }
         return $this->json($doctor->__toString());
+    }
+
+    /**
+     * @Route("/patients", name="show_patients")
+     */
+    public function showPatientsAction()
+    {
+        if (!$this->getUser() instanceof Doctor) {
+            $this->addFlash('warning', 'Tu no tienes pacientes, nada que ver ahí');
+            return $this->redirectToRoute('homepage');
+        }
+        return $this->render(':show:showPatients.html.twig');
     }
 }
