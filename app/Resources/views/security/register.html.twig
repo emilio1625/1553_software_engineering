@@ -9,7 +9,8 @@
 {% endblock stylesheets %}
 
 {% block form %}
-    <div class="container-fluid"><div class="row">
+    <div class="container-fluid">
+        <div class="row">
             <div class="col-md-6">
                 <div class="page-header">
                     <h1>Registro</h1>
@@ -23,6 +24,7 @@
                     {{ form_rest(form) }}
                 <button type="submit" class="btn btn-sucess">Login <span class="fa fa-key"></span></button>
                 {{ form_end(form) }}
+                <a class="btn btn-sm btn-info pull-right" href="{{ path('security_login') }}">Ya tengo una Cuenta</a>
             </div>
         </div>
     </div>

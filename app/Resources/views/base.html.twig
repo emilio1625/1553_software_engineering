@@ -48,10 +48,10 @@
                                 {% if is_granted('ROLE_DOCTOR') %}
                                     <li><a href="{{ path('show_patients') }}">Pacientes</a></li>
                                 {% elseif is_granted('ROLE_USER') %}
-                                    <li><a href="{{ path('show_appointment') }}">Citas</a></li>
-                                    <li><a href="{{ path('show_doctor') }}">Doctores</a></li>
+                                    <li><a href="{{ path('show_appointments') }}">Citas</a></li>
+                                    <li><a href="{{ path('show_doctors') }}">Doctores</a></li>
                                 {% else %}
-                                    <li><a href="{{ path('show_doctor') }}">Doctores</a></li>
+                                    <li><a href="{{ path('show_doctors') }}">Doctores</a></li>
                                 {% endif %}
                             </ul>
                             <ul class="nav navbar-nav navbar-right">

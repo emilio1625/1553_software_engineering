@@ -9,6 +9,8 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Admin;
+use AppBundle\Entity\Doctor;
 use AppBundle\Entity\Patient;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -64,5 +66,19 @@ class PatientController extends Controller
             throw $this->createNotFoundException();
         }
         return $this->json($patient->__toString());
+    }
+
+    /**
+     * @Route("/appointments", name="show_appointments")
+     */
+    public function showAppointments() {
+        $user = $this->getUser();
+        if ($user instanceOf Admin) {
+            $this->addFlash('info', 'Lo siento, usted no puede tener citas :(');
+            return $this->redirectToRoute('homepage');
+        } elseif ($user instanceOf Doctor) {
+            return $this->redirectToRoute('show_patients');
+        }
+        return $this->render('show/showAppointments.html.twig');
     }
 }

@@ -27,9 +27,14 @@ class AppointmentController extends Controller
 {
     /**
      * @Route("/new", name="new_appointment")
+     * @Security("is_granted('IS_AUTHENTICATED_ANONYMOUSLY')")
      */
     public function newAppointmentAction(Request $request)
     {
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('warning', 'Necesita estar registrado para agendar una cita');
+            return $this->redirectToRoute('patient_register');
+        }
         /** @var Admin|Doctor|Patient $user */
         $user = $this->getUser();
         $appointment = new Appointment();

@@ -6,7 +6,7 @@
             <div class="col-sm-3 well">
                 <div class="well">
                     <h1>{{ app.user.firstName }} {{ app.user.lastName }}</h1>
-                    <img src="{{ asset('uploads/photos/doctor/' ~ app.user.photo) }}" class="img-circle" height="85" width="85" alt="Avatar">
+                    <img src="{{ asset('uploads/photos/patient/' ~ app.user.photo) }}" class="img-circle" height="85" width="85" alt="Avatar">
                 </div>
             </div>
 
@@ -17,7 +17,7 @@
                         <div class="panel panel-default text-left">
                             <div class="panel-body">
 
-                                <p class="lead">Pacientes con citas próximas</p>
+                                <p class="lead">Próximas Citas</p>
 
                             </div>
                         </div>
@@ -27,12 +27,12 @@
 
                 {% for appointment in app.user.appointments if not appointment.isCanceled %}
                     {% if not appointment.FinishedAt %}
-                        {% set patient = appointment.patient %}
+                        {% set doctor = appointment.doctor %}
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="well">
-                                    <p class="lead">{{ patient.firstName }} {{ patient.lastName }}</p>
-                                    <img src="{{ asset('uploads/photos/patient' ~ patient.photo) }}" class="img-circle" height="65" width="65" alt="Avatar">
+                                    <p class="lead">{{ doctor.firstName }} {{ doctor.lastName }} <small>{{ doctor.specialty }}</small></p>
+                                    <img src="{{ asset('uploads/photos/doctor' ~ doctor.photo) }}" class="img-circle" height="65" width="65" alt="Avatar">
                                 </div>
                             </div>
                             <div class="col-sm-9">
@@ -40,6 +40,7 @@
                                     <p>{{ appointment.notes }}</p>
                                 </div>
                             </div>
+                            <a href="{{ path('edit_appointment', {'id' : appointment.id}) }}" class="btn btn-primary pull-right">Editar</a>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -50,13 +51,13 @@
             <div class="col-sm-2 well">
                 <p class="lead">Próximas Citas</p>
                 {% for appointment in app.user.appointments if not appointment.isCanceled %}
-                <div class="thumbnail">
-                    <p>Cita con {{ appointment.patient.firstName }} para el {{ appointment.startsAt|date('l, d-M-Y H:i') }}</p>
-                    <a href="{{ path('edit_appointment', {'id' : appointment.id}) }}" class="btn btn-primary">Editar</a>
-                </div>
+                    <div class="thumbnail">
+                        <p>Cita con el médico {{ appointment.doctor.firstName }} {{ appointment.doctor.specialty }} para el {{ appointment.startsAt|date('l, d-M-Y H:i') }}</p>
+                    </div>
                 {% endfor %}
 
-                <a href="{{ path('new_appointment' }}" class="btn btn-lg btn-primary pull-right">Nueva Cita</a>
+                <a href="{{ path('new_appointment') }}" class="btn btn-lg btn-primary pull-right">Nueva Cita</a>
+
 
             </div>
         </div>
